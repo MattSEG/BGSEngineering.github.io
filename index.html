@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BGS Engineering — Carbon Fiber Reinforced Polymers</title>
+  <meta name="description" content="Near-isotropic, UV-resistant, conductive carbon fiber reinforced polymers for aerospace and advanced applications.">
+  <meta property="og:title" content="BGS Engineering — Carbon Fiber Reinforced Polymers">
+  <meta property="og:description" content="Near-isotropic, UV-resistant, conductive CFRP for aerospace and advanced applications.">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="index,follow">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #0a0a0a;
+      --muted: #6b6b6b;
+      --rule: #eaeaea;
+      --maxw: 880px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body { font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", sans-serif; }
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: clamp(20px, 4vw, 40px); }
+    header { text-align: center; padding-top: clamp(16px, 5vh, 48px); }
+    .logo { width: 100%; max-width: 260px; height: auto; display: block; margin: 0 auto 18px; }
+    h1 {
+      margin: 6px 0 4px;
+      font-size: clamp(24px, 5vw, 40px);
+      letter-spacing: .2px;
+    }
+    .subhead {
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: clamp(15px, 2.5vw, 18px);
+    }
+    .card {
+      margin: clamp(20px, 4vw, 36px) auto;
+      padding: clamp(16px, 3.5vw, 28px);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      background: #fff;
+      max-width: var(--maxw);
+    }
+    .bullets { margin: 12px 0 0 0; padding: 0 0 0 18px; }
+    .bullets li { margin: 6px 0; }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 24px 0 40px;
+      font-size: 14px;
+    }
+    @media (min-width: 720px) {
+      .card { padding: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <img class="logo" src="assets/logo.png" alt="BGS Engineering logo">
+      <h1>BGS Engineering</h1>
+      <p class="subhead">Advanced carbon fiber reinforced polymers.</p>
+    </header>
+
+    <section class="card" aria-label="Overview">
+      <p>
+        We are developing a <strong>near-isotropic carbon fiber reinforced polymer</strong> system engineered for demanding environments.
+      </p>
+      <ul class="bullets">
+        <li><strong>Low weight with high mechanical performance</strong></li>
+        <li><strong>Durable UV stability</strong> for extended service life</li>
+        <li><strong>Intrinsic electrical conductivity</strong> for system integration</li>
+      </ul>
+      <p style="margin-top:14px;">
+        Focus areas include aerospace and other high-performance sectors where materials must combine strength, resilience, and reliability.
+      </p>
+      <p class="subhead" style="margin-top:10px;">R&amp;D in progress.</p>
+    </section>
+
+    <footer>
+      Albuquerque, New Mexico • © <span id="y">2025</span> BGS Engineering
+    </footer>
+  </main>
+
+  <script>
+    // keep year current
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
