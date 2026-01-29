@@ -49,6 +49,17 @@
       padding: 24px 0 40px;
       font-size: 14px;
     }
+    /* Link styling for the footer to match the theme */
+    footer a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted transparent;
+      transition: border-bottom-color 0.2s ease;
+    }
+    footer a:hover {
+      color: var(--fg);
+      border-bottom-color: var(--muted);
+    }
     @media (min-width: 720px) {
       .card { padding: 32px; }
     }
@@ -78,7 +89,7 @@
     </section>
 
     <footer>
-      Albuquerque, New Mexico • © <span id="y">2025</span> BGS Engineering
+      Albuquerque, New Mexico • <a href="mailto:info@bgsengineering.com">info@bgsengineering.com</a> • © <span id="y">2025</span> BGS Engineering
     </footer>
   </main>
 
