@@ -1,81 +1,102 @@
-<!DOCTYPE html>
-<html lang="en-US">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DARC White Paper v1 - BGS Engineering</title>
-    <link href="DARC_WhitePaperv1-web-resources/css/idGeneratedStyles.css" rel="stylesheet" type="text/css" />
-    <style>
-        /* Basic reset for readability since the original CSS is external */
-        body { font-family: sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; }
-        .header-info { border-bottom: 2px solid #333; margin-bottom: 30px; }
-        .section-title { font-weight: bold; text-transform: uppercase; margin-top: 40px; border-left: 4px solid #00529b; padding-left: 10px; }
-        .highlight { font-weight: bold; color: #000; }
-        .contact-info { margin-top: 50px; padding: 20px; background: #f4f4f4; }
-        img { max-width: 100%; height: auto; display: block; margin: 20px 0; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BGS Engineering — Carbon Fiber Reinforced Polymers</title>
+  <meta name="description" content="Near-isotropic, UV-resistant, conductive carbon fiber reinforced polymers for aerospace and advanced applications.">
+  <meta property="og:title" content="BGS Engineering — Carbon Fiber Reinforced Polymers">
+  <meta property="og:description" content="Near-isotropic, UV-resistant, conductive CFRP for aerospace and advanced applications.">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="index,follow">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #0a0a0a;
+      --muted: #6b6b6b;
+      --rule: #eaeaea;
+      --maxw: 880px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body { font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", sans-serif; }
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: clamp(20px, 4vw, 40px); }
+    header { text-align: center; padding-top: clamp(16px, 5vh, 48px); }
+    .logo { width: 100%; max-width: 260px; height: auto; display: block; margin: 0 auto 18px; }
+    h1 {
+      margin: 6px 0 4px;
+      font-size: clamp(24px, 5vw, 40px);
+      letter-spacing: .2px;
+    }
+    .subhead {
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: clamp(15px, 2.5vw, 18px);
+    }
+    .card {
+      margin: clamp(20px, 4vw, 36px) auto;
+      padding: clamp(16px, 3.5vw, 28px);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      background: #fff;
+      max-width: var(--maxw);
+    }
+    .bullets { margin: 12px 0 0 0; padding: 0 0 0 18px; }
+    .bullets li { margin: 6px 0; }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 24px 0 40px;
+      font-size: 14px;
+    }
+    /* Link styling for the footer to match the theme */
+    footer a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted transparent;
+      transition: border-bottom-color 0.2s ease;
+    }
+    footer a:hover {
+      color: var(--fg);
+      border-bottom-color: var(--muted);
+    }
+    @media (min-width: 720px) {
+      .card { padding: 32px; }
+    }
+  </style>
 </head>
 <body>
-
-    <header class="header-info">
-        <img src="DARC_WhitePaperv1-web-resources/image/1000008817.jpg" alt="BGS Engineering Logo" />
-        <p><strong>VERSION:</strong> 1.0 JANUARY 2026</p>
-        <p><strong>ORIGIN:</strong> BGS ENGINEERING, LLC | ALBUQUERQUE, NM</p>
-        <p><strong>SUBJECT:</strong> ENABLING THE $2,300 UNIT COST FOR THE DRONE DOMINANCE PROGRAM (DDP) VIA NOVEL MATERIALS</p>
+  <main class="wrap">
+    <header>
+      <img class="logo" src="assets/logo.png" alt="BGS Engineering logo">
+      <h1>BGS Engineering</h1>
+      <p class="subhead">Advanced carbon fiber reinforced polymers.</p>
     </header>
 
-    <main>
-        <section id="executive-summary">
-            <h2 class="section-title">I. EXECUTIVE SUMMARY</h2>
-            <img src="DARC_WhitePaperv1-web-resources/image/1.png" alt="DARC Composite Material visualization" />
-            <p class="highlight">HIGH-RATE PRODUCTION OF ISOTROPIC DARC COMPOSITES FOR ATTRITABLE SYSTEMS</p>
-            <p>The Department of War’s “Drone Dominance” initiative demands a radical shift in aerostructures: the transition from low-volume, high-touch manufacturing to <span class="highlight">high-rate, attritable production</span>. Current airframe solutions, primarily machined aluminum and autoclave-dependent woven composites, cannot meet the dual requirements of a <span class="highlight">$2,300 unit cost and scalable US-based output</span>.</p>
-            <p>BGS Engineering introduces <span class="highlight">DARC (Discontinuous Advanced Resin Composite)</span>, a proprietary material platform designed specifically for the next generation of loitering munitions and attritable systems. With a density of <span class="highlight">1.37 g/cm³</span> and <span class="highlight">isotropic</span> mechanical properties, DARC allows engineers to utilize high-pressure compression molding to replace complex machined components with a 40%-50% density reduction compared to aluminum.</p>
-            <p>Validated through ongoing collaboration with <span class="highlight">Sandia National Laboratories (SNL) and New Mexico State University (NMSU)</span>, DARC provides a sovereign, high-throughput solution that eliminates the autoclave bottleneck.</p>
-        </section>
+    <section class="card" aria-label="Overview">
+      <p>
+        We are developing a <strong>near-isotropic carbon fiber reinforced polymer</strong> system engineered for demanding environments.
+      </p>
+      <ul class="bullets">
+        <li><strong>Low weight with high mechanical performance</strong></li>
+        <li><strong>Durable UV stability</strong> for extended service life</li>
+        <li><strong>Intrinsic electrical conductivity</strong> for system integration</li>
+      </ul>
+      <p style="margin-top:14px;">
+        Focus areas include aerospace and other high-performance sectors where materials must combine strength, resilience, and reliability.
+      </p>
+      <p class="subhead" style="margin-top:10px;">R&amp;D in progress.</p>
+    </section>
 
-        <section id="capability-gap">
-            <h2 class="section-title">II. THE CAPABILITY GAP: THE COMPOSITE BOTTLENECK</h2>
-            <img src="DARC_WhitePaperv1-web-resources/image/1000008821.jpg" alt="Comparison chart of traditional composite vs DARC manufacturing velocity" />
-            <p>To achieve the scale required for modern loitering munitions, the U.S. industrial base must produce hundreds of thousands of units. Traditional manufacturing presents three critical points of friction: <strong>The Anisotropic Constraint</strong>, <strong>The Autoclave Lifecycle</strong>, and <strong>Environmental Vulnerability</strong>.</p>
-        </section>
-
-        <section id="material-science">
-            <h2 class="section-title">III. MATERIAL SCIENCE & MANUFACTURING VELOCITY</h2>
-            <p><span class="highlight">DARC</span> is engineered for <span class="highlight">isotropic performance</span> and <span class="highlight">net-shape precision</span>. By utilizing a high-pressure compression molding process, the material behaves predictably under load from any direction.</p>
-            
-            <img src="DARC_WhitePaperv1-web-resources/image/1000008812.jpg" alt="DARC Pathfinder Component showcasing complex geometry and net-shape flow" />
-            
-            <div style="background: #e9ecef; padding: 15px; margin: 20px 0;">
-                <p><strong>TECHNICAL NOTE: GEOMETRY VALIDATION (PATHFINDER UNIT) STATUS: DEPLOYED JAN 1, 2026</strong></p>
-                <ul>
-                    <li><strong>Complex Geometry:</strong> Validates "Net-Shape" flow during consolidation.</li>
-                    <li><strong>Hardware Integration:</strong> Successful use of molded-in threaded inserts.</li>
-                    <li><strong>Real-World Evaluation:</strong> Monitoring surface durability and resin stability.</li>
-                </ul>
-            </div>
-        </section>
-
-        <section id="survivability">
-            <h2 class="section-title">IV. INTRINSIC SURVIVABILITY & SIGNATURE MANAGEMENT</h2>
-            <img src="DARC_WhitePaperv1-web-resources/image/1000008815.jpg" alt="Internal view of DARC material showing fiber distribution" />
-            <p><span class="highlight">Integrated UV Resilience:</span> Proprietary stabilizing chemistry is integrated throughout the matrix.</p>
-            <p><span class="highlight">Intrinsic Conductivity:</span> Enables EMI shielding and ESD protection without heavy metallic liners. Quantitative validation (ASTM D4935) is scheduled for Q1 2026.</p>
-            
-            <img src="DARC_WhitePaperv1-web-resources/image/1000008819.png" alt="Radar absorption theoretical model for DARC matrix" />
-        </section>
-
-        <section id="conclusion">
-            <h2 class="section-title">V. OPERATIONAL SOVEREIGNTY & VI. CONCLUSION</h2>
-            <p>BGS Engineering is transitioning from TRL 4 laboratory validation to a <span class="highlight">TRL 5/6 validation</span> series scheduled for Q1 2026. We are currently selecting lead integration partners for the FY26 production ramp.</p>
-        </section>
-    </main>
-
-    <footer class="contact-info">
-        <p><strong>BGS ENGINEERING, LLC</strong></p>
-        <p>BGSENGINEERING.COM | MATT@BGSENGINEERING.COM</p>
-        <p>505.459.9410 | 8524 INDIAN SCHOOL NE, ALBUQUERQUE, NM 87112</p>
+    <footer>
+      Albuquerque, New Mexico • © <span id="y">2025</span> BGS Engineering
+      Albuquerque, New Mexico • <a href="mailto:info@bgsengineering.com">info@bgsengineering.com</a> • © <span id="y">2025</span> BGS Engineering
     </footer>
+  </main>
 
+  <script>
+    // keep year current
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
