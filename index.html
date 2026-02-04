@@ -88,15 +88,16 @@
       <p class="subhead" style="margin-top:10px;">R&amp;D in progress.</p>
     </section>
 
-    <footer>
-      Albuquerque, New Mexico • © <span id="y">2025</span> BGS Engineering
-      Albuquerque, New Mexico • <a href="mailto:info@bgsengineering.com">info@bgsengineering.com</a> • © <span id="y">2025</span> BGS Engineering
+ <footer>
+      <p>Albuquerque, New Mexico</p>
+      <p>
+        <a href="mailto:info@bgsengineering.com">info@bgsengineering.com</a> • 
+        © <span id="current-year">2026</span> BGS Engineering
+      </p>
     </footer>
   </main>
 
   <script>
-    // keep year current
-    document.getElementById('y').textContent = new Date().getFullYear();
+    // Updates the year to 2026 automatically
+    document.getElementById('current-year').textContent = new Date().getFullYear();
   </script>
-</body>
-</html>
