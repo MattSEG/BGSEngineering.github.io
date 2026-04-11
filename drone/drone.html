@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DARC — Unmanned Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,900;1,300&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+
+    /* ─────────────────────────────────────
+       TOKENS
+    ───────────────────────────────────── */
+    :root {
+      --black:      #000000;
+      --near:       #0d0d0d;
+      --dark:       #1a1a1a;
+      --mid:        #555555;
+      --muted:      #888888;
+      --light:      #cccccc;
+      --off:        #f0f0f0;
+      --white:      #ffffff;
+      --rule:       rgba(255,255,255,0.12);
+      --rule-b:     rgba(0,0,0,0.12);
+    }
+
+    /* ─────────────────────────────────────
+       RESET & BASE
+    ───────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: auto; }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    img { display: block; }
+
+    /* ─────────────────────────────────────
+       CANVAS / VIGNETTE
+    ───────────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw; height: 100vh;
+      z-index: -2;
+    }
+    #vignette {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 20%, rgba(0,0,0,0.1) 80%, rgba(0,0,0,0.7) 100%),
+        radial-gradient(ellipse 85% 85% at 50% 50%, transparent 25%, rgba(0,0,0,0.55) 100%);
+    }
+
+    /* ─────────────────────────────────────
+       LOADER
+    ───────────────────────────────────── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      transition: opacity 0.9s ease;
+    }
+    #loader.out { opacity: 0; pointer-events: none; }
+    .ld-wordmark {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: 80px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .ld-rule { width: 1px; height: 48px; background: rgba(255,255,255,0.2); }
+    .ld-track {
+      width: 200px;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    #ld-bar { height: 1px; width: 0%; background: #fff; transition: width 0.06s linear; }
+    #ld-pct {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ─────────────────────────────────────
+       CHROME
+    ───────────────────────────────────── */
+    #scroll-prog {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: #fff;
+      z-index: 600;
+    }
+    #frame-hud {
+      position: fixed;
+      bottom: 20px; right: 24px;
+      z-index: 600;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.15);
+      pointer-events: none;
+    }
+
+    /* ─────────────────────────────────────
+       NAV
+    ───────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.35s;
+    }
+    nav.scrolled { background: rgba(0,0,0,0.75); backdrop-filter: blur(24px); }
+    .nav-brand {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .nav-class {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ─────────────────────────────────────
+       DISPLAY TYPE SCALE
+    ───────────────────────────────────── */
+    .display {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+    }
+    .d-xxl { font-size: clamp(110px, 22vw, 260px); }
+    .d-xl  { font-size: clamp( 80px, 16vw, 200px); }
+    .d-lg  { font-size: clamp( 60px, 11vw, 140px); }
+    .d-md  { font-size: clamp( 40px,  7vw,  88px); }
+    .d-sm  { font-size: clamp( 28px,  4vw,  52px); }
+
+    /* ─────────────────────────────────────
+       SWISS SECTION LABEL
+       black filled bar — redacted-doc style
+    ───────────────────────────────────── */
+    .ch-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 28px;
+    }
+    .ch-label-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: #fff;
+      color: #000;
+      padding: 5px 10px;
+    }
+    .ch-label-text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-left: none;
+      color: rgba(255,255,255,0.5);
+      padding: 5px 14px;
+    }
+
+    /* dark-on-white variant */
+    .ch-label.dark .ch-label-num {
+      background: #000;
+      color: #fff;
+    }
+    .ch-label.dark .ch-label-text {
+      border-color: rgba(0,0,0,0.2);
+      color: rgba(0,0,0,0.45);
+    }
+
+    /* ─────────────────────────────────────
+       HERO  (glass / translucent)
+    ───────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 56px 88px;
+    }
+    .hero-content { max-width: 860px; }
+    .hero-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: clamp(88px, 17vw, 210px);
+      line-height: 0.86;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: #fff;
+      margin-bottom: 40px;
+    }
+    .hero-rule { width: 56px; height: 2px; background: #fff; margin-bottom: 28px; }
+    .hero-sub {
+      font-size: 18px;
+      color: rgba(255,255,255,0.65);
+      max-width: 540px;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+    .scroll-cue {
+      position: absolute;
+      bottom: 36px; right: 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      animation: nudge 2.4s ease-in-out infinite;
+    }
+    .scroll-line { width: 1px; height: 44px; background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent); }
+    @keyframes nudge { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+    /* ─────────────────────────────────────
+       STATS BAND  (glass / translucent)
+    ───────────────────────────────────── */
+    .stats-slab {
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .stat-cell {
+      padding: 56px 48px;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-val {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: clamp(60px, 9vw, 100px);
+      line-height: 1;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .stat-unit {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .stat-note {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 16px;
+      line-height: 1.5;
+      font-weight: 300;
+      max-width: 220px;
+    }
+
+    /* ─────────────────────────────────────
+       CHAPTER OPENER  (glass / translucent)
+    ───────────────────────────────────── */
+    .ch-open {
+      padding: 120px 56px 80px;
+      background: transparent;
+    }
+    .ch-tagline {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(28px, 4vw, 48px);
+      color: rgba(255,255,255,0.45);
+      margin-top: 28px;
+      max-width: 640px;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+    }
+
+    /* ─────────────────────────────────────
+       GHOST WATERMARK WORDS
+       ~14% opaque — 10% more than before
+    ───────────────────────────────────── */
+    .ghost-word {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 0.85;
+      letter-spacing: -0.02em;
+      pointer-events: none;
+      user-select: none;
+    }
+    .ghost-dark  { color: rgba(255,255,255,0.14); } /* on dark bg  */
+    .ghost-light { color: rgba(0,0,0,0.10); }       /* on white bg */
+
+    /* ─────────────────────────────────────
+       SOLID WHITE SLAB  (content on white)
+       Body text = black. HIGH contrast.
+    ───────────────────────────────────── */
+    .slab-white {
+      background: #fff;
+      color: #000;
+    }
+    .slab-white-inner {
+      padding: 80px 56px 100px;
+    }
+
+    /* ─────────────────────────────────────
+       SOLID BLACK SLAB  (content on black)
+       Body text = white. HIGH contrast.
+    ───────────────────────────────────── */
+    .slab-black {
+      background: #0d0d0d;
+      color: #fff;
+    }
+    .slab-black-inner {
+      padding: 80px 56px 100px;
+    }
+
+    /* ─────────────────────────────────────
+       TWO-COLUMN
+    ───────────────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    /* ─────────────────────────────────────
+       BODY TEXT
+    ───────────────────────────────────── */
+    .body-text {
+      font-size: 17px;
+      line-height: 1.8;
+      font-weight: 400;
+    }
+    .body-text + .body-text { margin-top: 22px; }
+    .body-text.on-white { color: #222; }
+    .body-text.on-black { color: #ccc; }
+    .body-text strong { font-weight: 600; }
+    .body-text.on-white strong { color: #000; }
+    .body-text.on-black strong { color: #fff; }
+
+    /* ─────────────────────────────────────
+       PULL QUOTE
+    ───────────────────────────────────── */
+    .pull-quote {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 700;
+      font-size: clamp(32px, 5vw, 58px);
+      line-height: 1.05;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      border-left: 4px solid;
+      padding-left: 24px;
+      margin-bottom: 36px;
+    }
+    .pull-quote.on-white { color: #000; border-color: #000; }
+    .pull-quote.on-black { color: #fff; border-color: #fff; }
+
+    /* ─────────────────────────────────────
+       PILLS / DATA TAGS
+    ───────────────────────────────────── */
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+    .pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 400;
+      padding: 5px 12px;
+      letter-spacing: 0.06em;
+      border: 1px solid;
+    }
+    .pill.on-white { border-color: rgba(0,0,0,0.25); color: #333; }
+    .pill.on-black { border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.6); }
+    .pill.filled-w { background: #000; color: #fff; border-color: #000; }
+    .pill.filled-b { background: #fff; color: #000; border-color: #fff; }
+
+    /* ─────────────────────────────────────
+       PROPERTY CARDS — on white slab
+    ───────────────────────────────────── */
+    .prop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    }
+    .prop-card-w {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-left: 4px solid #000;
+      padding: 44px 40px;
+      position: relative;
+    }
+    .prop-card-w + .prop-card-w { border-top: none; }
+    /* grid: remove left-border on non-first-column cards for cleanliness */
+    .pc-label-mono {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 18px;
+    }
+    .pc-title-w {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: 36px;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      color: #000;
+      line-height: 1.05;
+      margin-bottom: 18px;
+    }
+    .pc-body-w {
+      font-size: 15px;
+      color: #333;
+      line-height: 1.75;
+      font-weight: 400;
+    }
+    .pc-body-w strong { color: #000; font-weight: 600; }
+    .pc-stat-w {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: 44px;
+      color: #000;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+    .pc-stat-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: #888;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ─────────────────────────────────────
+       PROPERTY CARDS — on black slab
+    ───────────────────────────────────── */
+    .prop-card-b {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-left: 4px solid rgba(255,255,255,0.6);
+      padding: 44px 40px;
+      position: relative;
+    }
+    .pc-title-b {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: 36px;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      color: #fff;
+      line-height: 1.05;
+      margin-bottom: 18px;
+    }
+    .pc-body-b {
+      font-size: 15px;
+      color: #aaa;
+      line-height: 1.75;
+      font-weight: 400;
+    }
+    .pc-body-b strong { color: #fff; font-weight: 600; }
+    .pc-stat-b {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: 44px;
+      color: #fff;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+
+    /* ─────────────────────────────────────
+       HORIZONTAL RULE (full-bleed)
+    ───────────────────────────────────── */
+    .h-rule-w { border: none; border-top: 1px solid rgba(0,0,0,0.12); }
+    .h-rule-b { border: none; border-top: 1px solid rgba(255,255,255,0.08); }
+
+    /* ─────────────────────────────────────
+       INTERLUDE (glass / translucent)
+    ───────────────────────────────────── */
+    .interlude {
+      padding: 100px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ─────────────────────────────────────
+       SPECULATIVE WARNING BAR
+    ───────────────────────────────────── */
+    .spec-bar {
+      background: #fff;
+      border-left: 4px solid #000;
+      padding: 20px 32px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin: 0 56px;
+    }
+    .spec-bar-icon {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: #000;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .spec-bar-text {
+      font-size: 14px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .spec-bar-text strong { color: #000; font-weight: 600; }
+
+    /* ─────────────────────────────────────
+       MISSION CARDS (solid white)
+    ───────────────────────────────────── */
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 0;
+      border-top: 2px solid #000;
+      border-left: 2px solid #000;
+      margin: 0 56px 80px;
+    }
+    .mission-card {
+      background: #fff;
+      border-right: 2px solid #000;
+      border-bottom: 2px solid #000;
+      padding: 36px 32px;
+      transition: background 0.18s;
+    }
+    .mission-card:hover { background: #f5f5f5; }
+    .mc-sector {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 12px;
+    }
+    .mc-title {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: 28px;
+      text-transform: uppercase;
+      color: #000;
+      line-height: 1.1;
+      margin-bottom: 14px;
+      letter-spacing: 0.01em;
+    }
+    .mc-body {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    /* ─────────────────────────────────────
+       CLOSING / FOOTER
+    ───────────────────────────────────── */
+    .closing {
+      background: #000;
+      padding: 120px 56px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .closing-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      line-height: 2;
+      margin-top: 40px;
+    }
+    footer {
+      background: #000;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 36px 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-brand {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: 32px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .footer-note {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.1em;
+      text-align: right;
+      line-height: 1.8;
+      text-transform: uppercase;
+    }
+
+    /* ─────────────────────────────────────
+       REVEAL ANIMATION
+    ───────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.on { opacity: 1; transform: none; }
+
+    /* ─────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero, .ch-open, .slab-white-inner, .slab-black-inner,
+      .interlude, .closing, footer {
+        padding-left: 24px; padding-right: 24px;
+      }
+      .stats-slab { grid-template-columns: 1fr; }
+      .stat-cell { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+      .two-col { grid-template-columns: 1fr; gap: 32px; }
+      .prop-grid { grid-template-columns: 1fr; }
+      .mission-grid { margin-left: 24px; margin-right: 24px; }
+      .spec-bar { margin-left: 24px; margin-right: 24px; }
+      footer { flex-direction: column; gap: 16px; text-align: center; }
+      .footer-note { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div id="vignette"></div>
+<div id="scroll-prog"></div>
+<div id="frame-hud">FRAME 0001 / 0384</div>
+
+<!-- ── LOADER ── -->
+<div id="loader">
+  <div class="ld-wordmark">DARC</div>
+  <div class="ld-rule"></div>
+  <div class="ld-track"><div id="ld-bar"></div></div>
+  <div id="ld-pct">Loading frames — 0%</div>
+</div>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <div class="nav-brand">DARC</div>
+  <div class="nav-class">Unmanned Systems &nbsp;·&nbsp; Multifunctional Composite</div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO  ·  glass / translucent
+══════════════════════════════════════ -->
+<section class="hero" style="position:relative;">
+  <div class="hero-content">
+    <h1>The airframe<br>that thinks.</h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">One material. Structural performance, electromagnetic armor, active thermal control, and embedded intelligence — engineered into every gram of the airframe itself.</p>
+  </div>
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     STATS BAND  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="stats-slab reveal">
+  <div class="stat-cell">
+    <div class="stat-val">1.37</div>
+    <div class="stat-unit">g / cm³ &nbsp;—&nbsp; Density</div>
+    <div class="stat-note">~50% lighter than aluminum. Every gram saved is range, payload, or mission time.</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-val">≥280</div>
+    <div class="stat-unit">MPa &nbsp;—&nbsp; Flexural Strength</div>
+    <div class="stat-note">Measured floor. Estimated ceiling exceeds 350 MPa. On par with quasi-isotropic continuous-fiber benchmarks.</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-val">0.86</div>
+    <div class="stat-unit">Ω &nbsp;—&nbsp; Bulk Resistance</div>
+    <div class="stat-note">Trained bulk resistance through the full 3D conductive network of the cured airframe.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 01 OPENER  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="ch-open reveal">
+  <div class="ch-label">
+    <span class="ch-label-num">01</span>
+    <span class="ch-label-text">Structure &amp; Survivability</span>
+  </div>
+  <div class="display d-xxl" style="color:#fff;">BUILT<br>TO<br>LAST.</div>
+  <p class="ch-tagline">Because a crashed drone is a recovered drone. Or an exploited one.</p>
+</div>
+
+<!-- ── STRUCTURE CONTENT  ·  solid WHITE slab ── -->
+<div class="slab-white reveal">
+  <div class="slab-white-inner">
+    <div class="two-col">
+      <div>
+        <div class="ch-label dark" style="margin-bottom:32px;">
+          <span class="ch-label-num">STRENGTH</span>
+          <span class="ch-label-text">Confirmed Property</span>
+        </div>
+        <p class="body-text on-white">DARC delivers structural performance on par with continuous-fiber composites — but with one critical difference: <strong>it doesn't shatter</strong>. The discontinuous fiber architecture arrests crack propagation through fiber pull-out friction rather than catastrophic fracture.</p>
+        <p class="body-text on-white">The result is <strong>pseudo-ductile failure</strong> — progressive energy absorption rather than brittle collapse. Airframes survive hard landings. Payloads survive crashes. Operators recover assets instead of losing them.</p>
+        <div class="pills">
+          <div class="pill filled-w">≥280 MPa flexural floor</div>
+          <div class="pill on-white">Est. &gt;350 MPa</div>
+          <div class="pill on-white">Notch-insensitive</div>
+          <div class="pill on-white">50% lighter than aluminum</div>
+        </div>
+      </div>
+      <div>
+        <div class="pull-quote on-white">The structure fails safely — or it doesn't fail at all.</div>
+        <p class="body-text on-white">In combat drone operations, an airframe that fractures cleanly and predictably under overload is worth more than one that holds — then suddenly doesn't. Crack-arrest architecture provides a measurable, repeatable safety margin rather than a brittle cliff edge.</p>
+        <p class="body-text on-white">Void-free consolidation at 1.37 g/cm³ means no hidden porosity, no weak inclusions, no internal delamination paths. Dense, homogeneous composite — every time.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     INTERLUDE  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="interlude" style="padding: 60px 0; text-align:center; overflow:hidden;">
+  <div class="ghost-word ghost-dark d-xxl">INTELLIGENT</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 02 OPENER  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="ch-open reveal" style="padding-top:40px;">
+  <div class="ch-label">
+    <span class="ch-label-num">02</span>
+    <span class="ch-label-text">Embedded Intelligence</span>
+  </div>
+  <div class="display d-xl" style="color:#fff;">THE AIRFRAME<br>KNOWS.</div>
+  <p class="ch-tagline">Structural health monitoring. Zero added sensors. Zero added weight.</p>
+</div>
+
+<!-- ── INTELLIGENCE CONTENT  ·  solid BLACK slab ── -->
+<div class="slab-black reveal">
+  <div class="slab-black-inner">
+    <div class="prop-grid" style="grid-template-columns: repeat(auto-fill, minmax(360px,1fr)); gap:0; border:1px solid rgba(255,255,255,0.07);">
+
+      <div class="prop-card-b" style="border-bottom:1px solid rgba(255,255,255,0.07);">
+        <div class="pc-label-mono" style="color:#666;">Confirmed Property</div>
+        <div class="pc-title-b">Piezoresistive<br>Self-Monitoring</div>
+        <div class="pc-body-b">The conductive fiber network acts as a distributed piezoresistive sensor across the entire airframe. Physical strain, fatigue, delamination, or impact damage severs local conductive pathways — causing a <strong>measurable, irreversible increase in bulk resistance</strong> proportional to structural damage state.<br><br>No embedded sensors. No added weight. No additional failure modes.</div>
+        <div class="pc-stat-b">Passive</div>
+        <div class="pc-stat-sub" style="color:#555;">Zero sensor overhead · Continuous · Irreversible signal</div>
+      </div>
+
+      <div class="prop-card-b" style="border-bottom:1px solid rgba(255,255,255,0.07); border-left:1px solid rgba(255,255,255,0.07);">
+        <div class="pc-label-mono" style="color:#666;">Confirmed Property</div>
+        <div class="pc-title-b">Field Damage<br>Assessment</div>
+        <div class="pc-body-b">After any hard landing or contact event, a simple resistance measurement across the airframe quantifies accumulated structural damage. Field maintainers get a pass/fail verdict in seconds — no teardown, no NDT equipment, no specialist required.<br><br>The reading is a <strong>cumulative damage log</strong>. It doesn't reset. It doesn't lie.</div>
+        <div class="pc-stat-b">&lt;60 sec</div>
+        <div class="pc-stat-sub" style="color:#555;">Time to field structural assessment · No NDT required</div>
+      </div>
+
+      <div class="prop-card-b" style="border-left:1px solid rgba(255,255,255,0.07);">
+        <div class="pc-label-mono" style="color:#666;">Confirmed Property</div>
+        <div class="pc-title-b">X-Ray Opacity &amp;<br>Adversary Denial</div>
+        <div class="pc-body-b">At just <strong>1/8″ thickness</strong>, DARC is completely opaque to high-resolution X-ray CT scanners. A recovered drone cannot be inspected, reverse-engineered, or internally mapped by adversary intelligence without destructive disassembly.<br><br>Same property enables your own post-flight internal inspection — while denying it to everyone else.</div>
+        <div class="pc-stat-b">1/8″</div>
+        <div class="pc-stat-sub" style="color:#555;">Complete CT opacity at structural thickness</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     INTERLUDE  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="interlude" style="padding: 60px 0; text-align:center;">
+  <div class="ghost-word ghost-dark d-xxl">SHIELDED</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 03 OPENER  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="ch-open reveal" style="padding-top:40px;">
+  <div class="ch-label">
+    <span class="ch-label-num">03</span>
+    <span class="ch-label-text">Electromagnetic Armor</span>
+  </div>
+  <div class="display d-xl" style="color:#fff;">WHEN THE<br>SIGNAL IS<br>THE WEAPON.</div>
+  <p class="ch-tagline">The airframe becomes a Faraday cage. No additional shielding required.</p>
+</div>
+
+<!-- ── EMI CONTENT  ·  solid WHITE slab ── -->
+<div class="slab-white reveal">
+  <div class="slab-white-inner">
+    <div class="two-col">
+      <div>
+        <div class="ghost-word ghost-light d-lg" style="margin-bottom:32px;">EMI</div>
+        <p class="body-text on-white">At 0.86 Ω bulk resistance, the continuous conductive fiber network inside the DARC airframe presents a massive <strong>impedance mismatch with free space</strong>. Radar energy reflects. High-power microwave pulses — the same ones designed to fry drone electronics — hit an outer skin that looks like a conductor and turn back.</p>
+        <p class="body-text on-white">Waves that do penetrate encounter multiple internal reflections and dielectric loss from the conductive matrix, converting microwave energy to low-grade heat volumetrically rather than letting it reach avionics.</p>
+        <div class="pills" style="margin-top:32px;">
+          <div class="pill filled-w">Reflective EMI shield</div>
+          <div class="pill on-white">40–60 dB SE estimated</div>
+          <div class="pill on-white">HPM-resistant</div>
+          <div class="pill on-white">No added layer</div>
+        </div>
+      </div>
+      <div>
+        <div class="pull-quote on-white">The shell is the shield.<br>Weight penalty: zero.</div>
+        <p class="body-text on-white">Every other drone on the market requires additional shielding — film, foil, or separate enclosures — to protect GPS receivers, flight controllers, and comms hardware from RF interference and directed energy threats.</p>
+        <p class="body-text on-white">DARC provides that shielding as an inherent property of the structural material itself. There is no weight penalty. There is no additional fabrication step. The airframe <em>is</em> the Faraday cage.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     INTERLUDE  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="interlude" style="padding: 60px 0; text-align:center;">
+  <div class="ghost-word ghost-dark d-xxl">ACTIVE</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 04 OPENER  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="ch-open reveal" style="padding-top:40px;">
+  <div class="ch-label">
+    <span class="ch-label-num">04</span>
+    <span class="ch-label-text">Active Thermal Systems</span>
+  </div>
+  <div class="display d-xl" style="color:#fff;">HEAT ON<br>DEMAND.</div>
+  <p class="ch-tagline">De-ice without heater mats. Manage thermals without ducts.</p>
+</div>
+
+<!-- ── THERMAL CONTENT  ·  solid BLACK slab ── -->
+<div class="slab-black reveal">
+  <div class="slab-black-inner">
+    <div class="two-col" style="margin-bottom:60px;">
+      <div>
+        <div class="ch-label" style="margin-bottom:28px;">
+          <span class="ch-label-num">DE-ICE</span>
+          <span class="ch-label-text">Confirmed Property</span>
+        </div>
+        <p class="body-text on-black">Apply low-voltage DC across the conductive airframe and the entire structure becomes a <strong>resistive heating element</strong>. Ice loading on leading edges, propeller roots, and sensor windows sheds rapidly — distributed uniformly across the whole surface.</p>
+        <p class="body-text on-black">No embedded metallic heater mats. No parasitic weight. No failure modes from wire routing in the structure. The airframe heats itself.</p>
+        <div class="pills" style="margin-top:28px;">
+          <div class="pill filled-b">Low-voltage DC</div>
+          <div class="pill on-black">No heater mats</div>
+          <div class="pill on-black">Zero added weight</div>
+          <div class="pill on-black">Uniform distribution</div>
+        </div>
+      </div>
+      <div>
+        <div class="ch-label" style="margin-bottom:28px;">
+          <span class="ch-label-num">DAMPING</span>
+          <span class="ch-label-text">Highly Likely</span>
+        </div>
+        <p class="body-text on-black">The discontinuous fiber architecture provides superior mechanical damping versus stiff continuous-fiber laminates. Millions of chip-to-chip fiber interfaces absorb vibration under dynamic loading — converting rotor harmonics and airframe resonance to low-grade heat rather than transmitting them to payload optics and sensors.</p>
+        <p class="body-text on-black">For gimbaled payloads and synthetic aperture radar: <strong>the mount is the isolator</strong>.</p>
+        <div class="pills" style="margin-top:28px;">
+          <div class="pill on-black">Higher tan δ than CF laminates</div>
+          <div class="pill on-black">Rotor NVH absorption</div>
+          <div class="pill on-black">Payload stabilization</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="h-rule-b" style="margin-bottom:60px;">
+
+    <div class="two-col">
+      <div>
+        <div class="pull-quote on-black">The structure wicks heat where metal would concentrate it.</div>
+      </div>
+      <div>
+        <div class="ch-label" style="margin-bottom:28px;">
+          <span class="ch-label-num">THERMAL</span>
+          <span class="ch-label-text">Highly Likely</span>
+        </div>
+        <p class="body-text on-black">The 3D conductive fiber network wicks and distributes localized heat from motor controllers, battery packs, and flight computers — spreading it volumetrically through the structure rather than concentrating it at hot spots.</p>
+        <p class="body-text on-black">Battery thermal events are managed at the enclosure level before they escalate. Motor controller heat is conducted into airframe mass rather than building locally.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     INTERLUDE  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="interlude" style="padding: 60px 0; text-align:center;">
+  <div class="ghost-word ghost-dark d-xxl">FIELD<br>PROOF</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 05 OPENER  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="ch-open reveal" style="padding-top:40px;">
+  <div class="ch-label">
+    <span class="ch-label-num">05</span>
+    <span class="ch-label-text">Environmental Survival</span>
+  </div>
+  <div class="display d-xl" style="color:#fff;">SALT.<br>SAND.<br>SUN.<br>NONE OF IT<br>MATTERS.</div>
+  <p class="ch-tagline">The mission doesn't stop for weather. Neither does the material.</p>
+</div>
+
+<!-- ── ENV CONTENT  ·  solid WHITE slab ── -->
+<div class="slab-white reveal">
+  <div class="slab-white-inner">
+    <div class="two-col">
+      <div>
+        <div class="ghost-word ghost-light d-md" style="margin-bottom:24px;">UV</div>
+        <p class="body-text on-white">The resin system in DARC is engineered from the ground up for outdoor permanence. The matrix backbone is <strong>inherently UV-transparent</strong> at the molecular level — it doesn't absorb the wavelengths that cause chain scission and chalking in standard epoxies. Multilayer UV protection handles the surface and subsurface.</p>
+        <p class="body-text on-white">The result: no chalking, no yellowing, no surface crazing — under continuous outdoor exposure. No protective coatings required. No recoating intervals.</p>
+        <div class="pills" style="margin-top:28px;">
+          <div class="pill filled-w">No chalking · No yellowing</div>
+          <div class="pill on-white">Acid/moisture resistant</div>
+          <div class="pill on-white">Marine-grade UV stability</div>
+          <div class="pill on-white">No coatings required</div>
+        </div>
+      </div>
+      <div>
+        <div class="ghost-word ghost-light d-md" style="margin-bottom:24px;">FOUL</div>
+        <p class="body-text on-white">The resin surface migrates during cure to form a <strong>superhydrophobic, low-energy boundary layer</strong>. Marine biological contaminants — barnacles, algae, biofilm — cannot anchor effectively to this surface.</p>
+        <p class="body-text on-white">For maritime patrol drones, ship-launched UAVs, and littoral UAS platforms, this eliminates the fouling problem entirely — without biocide coatings, without scheduled hull cleaning, without performance degradation over deployment duration.</p>
+        <p class="body-text on-white" style="margin-top:22px;">This surface is not applied. It is the surface. It cannot be worn off.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SPECULATIVE WARNING
+══════════════════════════════════════ -->
+<div class="spec-bar reveal" style="margin-top:80px;">
+  <div class="spec-bar-icon">[!]</div>
+  <div class="spec-bar-text"><strong>The following section presents speculative / engineering-feasible roadmap properties.</strong> Grounded in documented physics. Requiring dedicated development programs. Presented as technology potential, not current capability.</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 06 OPENER  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="ch-open reveal" style="padding-top:80px;">
+  <div class="ch-label">
+    <span class="ch-label-num">06</span>
+    <span class="ch-label-text">Low Observability — Roadmap</span>
+  </div>
+  <div class="display d-xl" style="color:#fff;">THE PATH<br>TO INVISIBLE.</div>
+  <p class="ch-tagline">High conductivity today is a reflector. Engineered, it becomes a trap.</p>
+</div>
+
+<!-- ── STEALTH CONTENT  ·  solid BLACK slab ── -->
+<div class="slab-black reveal">
+  <div class="slab-black-inner">
+    <div class="prop-grid" style="grid-template-columns:1fr 1fr; gap:0; border:1px solid rgba(255,255,255,0.07);">
+
+      <div class="prop-card-b" style="border-left:none; border-right:1px solid rgba(255,255,255,0.07);">
+        <div class="pc-label-mono" style="color:#666;">Speculative — Engineering-Feasible</div>
+        <div class="pc-title-b">Radar Absorbing<br>Structure (RAS)</div>
+        <div class="pc-body-b">Current DARC conductivity makes the airframe a radar reflector. Engineering a true RAS path requires surface patterning via frequency selective surfaces (FSS) or honeycomb metamaterials — plus an impedance-matching dielectric outer layer that forces wave entry and dissipation into the conductive inner structure.<br><br>The energy-absorbing core already exists. The outer impedance-matching layer is the engineering development required. IR stealth via controlled emissivity tuning is documented in analogous composite aerogels.</div>
+        <div class="pills" style="margin-top:24px;">
+          <div class="pill on-black">FSS surface geometry required</div>
+          <div class="pill on-black">Dielectric outer layer</div>
+          <div class="pill on-black">CB-matrix volumetric absorption</div>
+        </div>
+      </div>
+
+      <div class="prop-card-b" style="border-left:none;">
+        <div class="pc-label-mono" style="color:#666;">Frontier — High Speculation</div>
+        <div class="pc-title-b">DC-Tunable<br>Radar Signature</div>
+        <div class="pc-body-b">The conductive network in DARC has frequency-dependent AC impedance from distributed RC tunneling junctions. Applying a DC bias alters inter-particle tunneling gap widths via electrostrictive and thermal expansion effects — shifting RC time constants and the RF reflection/absorption spectrum in real time.<br><br>This would enable <strong>electronically controlled radar cross-section tuning</strong> without mechanical reconfiguration. Adaptive RCS on demand. No moving parts. Software-defined observability.</div>
+        <div class="pills" style="margin-top:24px;">
+          <div class="pill on-black">DC bias → impedance shift</div>
+          <div class="pill on-black">Dynamic RCS control</div>
+          <div class="pill on-black">No moving parts</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     INTERLUDE  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="interlude" style="padding:80px 0 40px; text-align:center;">
+  <div class="ghost-word ghost-dark d-xxl">MISSION<br>READY</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 07 OPENER  ·  glass / translucent
+══════════════════════════════════════ -->
+<div class="ch-open reveal" style="padding-top:60px;">
+  <div class="ch-label">
+    <span class="ch-label-num">07</span>
+    <span class="ch-label-text">Platform Applications</span>
+  </div>
+  <div class="display d-lg" style="color:#fff;">EVERY<br>MISSION<br>PROFILE.</div>
+  <p class="ch-tagline">Tactical ISR to stratospheric persistence to counter-UAS.</p>
+</div>
+
+<!-- ── MISSION CARDS  ·  solid WHITE grid ── -->
+<div class="mission-grid reveal">
+
+  <div class="mission-card">
+    <div class="mc-sector">Defense / Commercial</div>
+    <div class="mc-title">UAV Primary Airframe</div>
+    <div class="mc-body">Structural performance + EMI shielding + piezoresistive SHM + UV immunity in a single molded part. Every function that normally requires secondary systems, coatings, or embedded hardware is built into the structure itself. Lighter. Simpler. More survivable.</div>
+  </div>
+
+  <div class="mission-card">
+    <div class="mc-sector">Defense / Commercial</div>
+    <div class="mc-title">Anti-Ice Leading Edge</div>
+    <div class="mc-body">Joule-activated de-icing without heater mats. Superhydrophobic surface slows ice nucleation. Piezoresistive network detects ice-load strain. Three systems. One material. Zero added weight.</div>
+  </div>
+
+  <div class="mission-card">
+    <div class="mc-sector">Defense / Commercial — Strategic</div>
+    <div class="mc-title">HAPS Wing &amp; Primary Skin</div>
+    <div class="mc-body">UV immunity eliminates protective coatings for 90-day stratospheric loiter. Radiation crosslinking actually improves mechanical properties at altitude over the mission lifetime. Joule de-icing clears leading edges at −60°C without embedded systems. Multi-piece molding required for full-span skins.</div>
+  </div>
+
+  <div class="mission-card">
+    <div class="mc-sector">Defense</div>
+    <div class="mc-title">Electronic Warfare Pod Shell</div>
+    <div class="mc-body">Full-spectrum EMI shielding prevents self-jamming. X-ray opacity defeats adversary inspection of recovered hardware. Pseudo-ductile failure contains fragment spall under gun-blast overpressure. One shell does the work of three separate systems.</div>
+  </div>
+
+  <div class="mission-card">
+    <div class="mc-sector">Defense</div>
+    <div class="mc-title">HPM Weapon Aperture Housing</div>
+    <div class="mc-body">Tunable conductive network confines stray radiation during emission events. Radiation crosslinking provides resistance to repeated HPM exposure cycles. Lightweight for aircraft and drone external pod mounting.</div>
+  </div>
+
+  <div class="mission-card">
+    <div class="mc-sector">Defense</div>
+    <div class="mc-title">C-UAS Antenna Pedestal</div>
+    <div class="mc-body">Low density speeds antenna slewing for faster target acquisition. EMI shielding contains self-generated RF, preventing cross-talk with co-located radar. Pseudo-ductile failure contains fragment spall from proximity detonation.</div>
+  </div>
+
+  <div class="mission-card">
+    <div class="mc-sector">Defense</div>
+    <div class="mc-title">ISR / Sensor Pod Shell</div>
+    <div class="mc-body">X-ray opacity plus EMI shielding conceals antenna geometry and internal layout from adversary intelligence. Lightweight structure maximizes loiter time. UV-stable without coatings for extended pre-deployment storage.</div>
+  </div>
+
+  <div class="mission-card">
+    <div class="mc-sector">Defense</div>
+    <div class="mc-title">Counter-Drone Jamming Mount</div>
+    <div class="mc-body">Vibration damping suppresses rotor-induced jitter that degrades antenna pointing. EMI shielding prevents self-interference between jamming transmitters and receive chains. Low thermal expansion holds antenna tuning calibration.</div>
+  </div>
+
+  <div class="mission-card">
+    <div class="mc-sector">Defense</div>
+    <div class="mc-title">Airborne DEW Optical Bench</div>
+    <div class="mc-body">Dimensional stability under thermal cycling preserves directed energy weapon pointing precision. Joule-heating thermal equilibration eliminates beam-path gradients. EMI shielding protects co-located detector electronics during firing.</div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     CLOSING  ·  punched-out DARC reveal
+══════════════════════════════════════ -->
+<div class="closing reveal" style="
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 0;
+  background: transparent;
+">
+  <!-- Dark overlay — this is what the text punches through -->
+  <div style="position:absolute; inset:0; background:rgba(0,0,0,0.88); z-index:0; pointer-events:none;"></div>
+
+  <!-- PUNCHED-OUT DARC — destination-out cuts a hole in the overlay above -->
+  <div style="
+    position: relative;
+    z-index: 1;
+    mix-blend-mode: destination-out;
+    text-align: center;
+    padding: 100px 56px 80px;
+    pointer-events: none;
+  ">
+    <div class="display d-xxl" style="color:#000; line-height:0.88; letter-spacing:-0.01em;">DARC</div>
+  </div>
+
+  <!-- Text content sits above, on top of the composited result -->
+  <div style="position:relative; z-index:2; text-align:center; padding: 0 56px 100px;">
+    <div class="display d-md" style="color:#fff; max-width:700px; margin:0 auto; line-height:1.15;">
+      One material.<br>Every capability<br>the mission demands.
+    </div>
+    <div class="closing-sub">
+      Structural performance &nbsp;·&nbsp; EMI shielding &nbsp;·&nbsp; Active de-icing<br>
+      Structural health monitoring &nbsp;·&nbsp; Environmental resistance &nbsp;·&nbsp; Adversary denial
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">DARC</div>
+  <div class="footer-note">
+    Discontinuous Advanced Resin Composite<br>
+    Unmanned Systems Applications<br>
+    Properties ranked by evidentiary confidence
+  </div>
+</footer>
+
+<script>
+(function () {
+  const TOTAL = 384;
+  const BASE  = 'frames1/';
+  const images = new Array(TOTAL);
+  let loaded = 0, ready = false, currentFrame = 0, raf = false;
+
+  const canvas  = document.getElementById('bg-canvas');
+  const ctx     = canvas.getContext('2d');
+  const loader  = document.getElementById('loader');
+  const ldBar   = document.getElementById('ld-bar');
+  const ldPct   = document.getElementById('ld-pct');
+  const prog    = document.getElementById('scroll-prog');
+  const hud     = document.getElementById('frame-hud');
+  const navEl   = document.getElementById('nav');
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    draw(currentFrame);
+  }
+
+  function draw(i) {
+    const img = images[i];
+    if (!img || !img.complete || !img.naturalWidth) return;
+    const cw = canvas.width, ch = canvas.height;
+    const s  = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+    ctx.drawImage(img,
+      (cw - img.naturalWidth  * s) / 2,
+      (ch - img.naturalHeight * s) / 2,
+      img.naturalWidth * s, img.naturalHeight * s);
+  }
+
+  function onScroll() {
+    if (!ready || raf) return;
+    raf = true;
+    requestAnimationFrame(() => {
+      raf = false;
+      const max  = document.documentElement.scrollHeight - window.innerHeight;
+      const p    = max > 0 ? window.scrollY / max : 0;
+      prog.style.width = (p * 100).toFixed(2) + '%';
+      navEl.classList.toggle('scrolled', window.scrollY > 60);
+      const idx = Math.min(TOTAL - 1, Math.floor(p * TOTAL));
+      if (idx !== currentFrame) {
+        currentFrame = idx;
+        draw(idx);
+        hud.textContent = 'FRAME ' + String(idx + 1).padStart(4, '0') + ' / 0384';
+      }
+    });
+  }
+
+  function onLoad(i) {
+    loaded++;
+    const p = Math.floor(loaded / TOTAL * 100);
+    ldBar.style.width = p + '%';
+    ldPct.textContent = 'Loading frames — ' + p + '%';
+    if (i === 0) resize();
+    if (loaded === TOTAL) {
+      ready = true;
+      resize();
+      setTimeout(() => {
+        loader.classList.add('out');
+        setTimeout(() => loader.style.display = 'none', 950);
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } });
+        }, { threshold: 0.05 });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+      }, 200);
+    }
+  }
+
+  for (let i = 0; i < TOTAL; i++) {
+    const img = new Image();
+    img.src = BASE + 'frame_' + String(i + 1).padStart(4, '0') + '.jpg';
+    const idx = i;
+    img.onload  = () => onLoad(idx);
+    img.onerror = () => onLoad(idx);
+    images[i] = img;
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', resize);
+})();
+</script>
+</body>
+</html>
