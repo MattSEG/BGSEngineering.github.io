@@ -99,6 +99,36 @@
     }
 
     /* ─────────────────────────────────────
+       DOCUMENT CLASSIFICATION STRIP
+    ───────────────────────────────────── */
+    #doc-strip {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.92);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 7px 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .strip-id {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .strip-class {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+    }
+
+    /* ─────────────────────────────────────
        CHROME
     ───────────────────────────────────── */
     #scroll-prog {
@@ -216,7 +246,7 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 0 56px 88px;
+      padding: 33px 56px 88px;
     }
     .hero-content { max-width: 860px; }
     .hero-eyebrow {
@@ -230,12 +260,12 @@
     .hero h1 {
       font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
       font-weight: 900;
-      font-size: clamp(88px, 17vw, 210px);
-      line-height: 0.86;
+      font-size: clamp(100px, 20vw, 240px);
+      line-height: 0.84;
       text-transform: uppercase;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.03em;
       color: #fff;
-      margin-bottom: 40px;
+      margin-bottom: 44px;
     }
     .hero-rule { width: 56px; height: 2px; background: #fff; margin-bottom: 28px; }
     .hero-sub {
@@ -308,7 +338,7 @@
        CHAPTER OPENER  (glass / translucent)
     ───────────────────────────────────── */
     .ch-open {
-      padding: 120px 56px 80px;
+      padding: 140px 56px 96px;
       background: transparent;
     }
     .ch-tagline {
@@ -348,7 +378,7 @@
       color: #000;
     }
     .slab-white-inner {
-      padding: 80px 56px 100px;
+      padding: 88px 56px 112px;
     }
 
     /* ─────────────────────────────────────
@@ -360,7 +390,7 @@
       color: #fff;
     }
     .slab-black-inner {
-      padding: 80px 56px 100px;
+      padding: 88px 56px 112px;
     }
 
     /* ─────────────────────────────────────
@@ -536,9 +566,26 @@
       padding: 100px 56px;
       display: flex;
       flex-direction: column;
+      align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
+    }
+    .interlude-rule {
+      width: 1px;
+      height: 40px;
+      background: rgba(255,255,255,0.15);
+      margin: 36px auto;
+    }
+
+    /* ─────────────────────────────────────
+       CHAPTER OPENER RULE
+    ───────────────────────────────────── */
+    .ch-rule {
+      width: 100%;
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+      margin-bottom: 56px;
     }
 
     /* ─────────────────────────────────────
@@ -634,10 +681,11 @@
     footer {
       background: #000;
       border-top: 1px solid rgba(255,255,255,0.08);
-      padding: 36px 56px;
-      display: flex;
-      justify-content: space-between;
+      padding: 44px 56px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
+      gap: 40px;
     }
     .footer-brand {
       font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
@@ -646,6 +694,16 @@
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: #fff;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .footer-logo img {
+      height: 40px;
+      width: auto;
+      opacity: 0.35;
     }
     .footer-note {
       font-family: 'IBM Plex Mono', monospace;
@@ -681,12 +739,17 @@
       .prop-grid { grid-template-columns: 1fr; }
       .mission-grid { margin-left: 24px; margin-right: 24px; }
       .spec-bar { margin-left: 24px; margin-right: 24px; }
-      footer { flex-direction: column; gap: 16px; text-align: center; }
+      footer { grid-template-columns: 1fr; justify-items: center; gap: 24px; text-align: center; }
       .footer-note { text-align: center; }
     }
   </style>
 </head>
 <body>
+
+<div id="doc-strip">
+  <div class="strip-id">DARC &mdash; Discontinuous Advanced Resin Composite</div>
+  <div class="strip-class">Unmanned Systems &nbsp;//&nbsp; Capability Brief &nbsp;//&nbsp; Rev 1.0</div>
+</div>
 
 <canvas id="bg-canvas"></canvas>
 <div id="vignette"></div>
@@ -701,20 +764,15 @@
   <div id="ld-pct">Loading frames — 0%</div>
 </div>
 
-<!-- ── NAV ── -->
-<nav id="nav">
-  <div class="nav-brand">DARC</div>
-  <div class="nav-class">Unmanned Systems &nbsp;·&nbsp; Multifunctional Composite</div>
-</nav>
 
 <!-- ══════════════════════════════════════
      HERO  ·  glass / translucent
 ══════════════════════════════════════ -->
 <section class="hero" style="position:relative;">
   <div class="hero-content">
-    <h1>The airframe<br>that thinks.</h1>
+    <h1>NOTHING<br>BOLTED<br>ON.</h1>
     <div class="hero-rule"></div>
-    <p class="hero-sub">One material. Structure. Shield. Sensor. Thermal path. Nothing added.</p>
+    <p class="hero-sub">One material. Structure. EMI shield. Sensor. Thermal path. Nothing added.</p>
   </div>
   <div class="scroll-cue">
     <div class="scroll-line"></div>
@@ -734,12 +792,12 @@
   <div class="stat-cell">
     <div class="stat-val">≥280</div>
     <div class="stat-unit">MPa &nbsp;—&nbsp; Flexural Strength</div>
-    <div class="stat-note">Measured floor. Estimated ceiling exceeds 350 MPa. On par with quasi-isotropic continuous-fiber benchmarks.</div>
+    <div class="stat-note">Confirmed floor. Estimated ceiling above 350 MPa — competitive with continuous-fiber benchmarks.</div>
   </div>
   <div class="stat-cell">
     <div class="stat-val">0.86</div>
     <div class="stat-unit">Ω &nbsp;—&nbsp; Bulk Resistance</div>
-    <div class="stat-note">Trained bulk resistance through the full 3D conductive network of the cured airframe.</div>
+    <div class="stat-note">Measured through the cured 3D fiber network. The same property that shields, senses, and distributes heat — no secondary systems required.</div>
   </div>
 </div>
 
@@ -751,7 +809,7 @@
     <span class="ch-label-num">01</span>
     <span class="ch-label-text">Structure &amp; Survivability</span>
   </div>
-  <div class="display d-xxl" style="color:#fff;">CRASH-<br>SURVIV-<br>ABLE.</div>
+  <div class="display d-xxl" style="color:#fff;">TOUGH<br>AS<br>NAILS.</div>
   <p class="ch-tagline">A downed drone is a recovered drone. Or a compromised one.</p>
 </div>
 
@@ -764,19 +822,19 @@
           <span class="ch-label-num">STRENGTH</span>
           <span class="ch-label-text">Confirmed Property</span>
         </div>
-        <p class="body-text on-white">DARC delivers structural performance on par with continuous-fiber composites — but with one critical difference: <strong>it doesn't shatter</strong>. The discontinuous fiber architecture arrests crack propagation through fiber pull-out friction rather than catastrophic fracture.</p>
-        <p class="body-text on-white">The result is <strong>pseudo-ductile failure</strong> — progressive energy absorption rather than brittle collapse. Airframes survive hard landings. Payloads survive crashes. Operators recover assets instead of losing them.</p>
+        <p class="body-text on-white">DARC delivers structural performance in the range of continuous-fiber composites — with one critical difference: <strong>it doesn't shatter</strong>. The discontinuous fiber architecture arrests crack propagation through fiber pull-out friction, not catastrophic fracture.</p>
+        <p class="body-text on-white">The result is <strong>pseudo-ductile behavior</strong> — progressive energy absorption rather than brittle collapse. Hard landings become recoverable events. Payloads survive. Operators recover assets rather than writing them off.</p>
         <div class="pills">
           <div class="pill filled-w">≥280 MPa flexural floor</div>
-          <div class="pill on-white">Est. &gt;350 MPa</div>
+          <div class="pill on-white">Est. ceiling &gt;350 MPa</div>
           <div class="pill on-white">Notch-insensitive</div>
-          <div class="pill on-white">50% lighter than aluminum</div>
+          <div class="pill on-white">Half the density of aluminum</div>
         </div>
       </div>
       <div>
-        <div class="pull-quote on-white">The structure fails safely — or it doesn't fail at all.</div>
-        <p class="body-text on-white">In combat drone operations, an airframe that fractures cleanly and predictably under overload is worth more than one that holds — then suddenly doesn't. Crack-arrest architecture provides a measurable, repeatable safety margin rather than a brittle cliff edge.</p>
-        <p class="body-text on-white">Void-free consolidation at 1.37 g/cm³ means no hidden porosity, no weak inclusions, no internal delamination paths. Dense, homogeneous composite — every time.</p>
+        <div class="pull-quote on-white">Predictable failure is a feature. Brittle collapse is not.</div>
+        <p class="body-text on-white">An airframe that degrades gradually and predictably gives operators options. One that holds — then suddenly doesn't — gives them none. Crack-arrest architecture replaces a brittle cliff edge with a measurable, manageable safety margin.</p>
+        <p class="body-text on-white">Void-free consolidation at 1.37 g/cm³: no hidden porosity, no weak inclusions, no delamination paths. Dense, homogeneous structure — every part, every batch.</p>
       </div>
     </div>
   </div>
@@ -785,8 +843,10 @@
 <!-- ══════════════════════════════════════
      INTERLUDE  ·  glass / translucent
 ══════════════════════════════════════ -->
-<div class="interlude" style="padding: 60px 0; text-align:center; overflow:hidden;">
+<div class="interlude" style="padding: 100px 0; overflow:hidden;">
+  <div class="interlude-rule"></div>
   <div class="ghost-word ghost-dark d-xxl">INTELLIGENT</div>
+  <div class="interlude-rule"></div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -804,30 +864,38 @@
 <!-- ── INTELLIGENCE CONTENT  ·  solid BLACK slab ── -->
 <div class="slab-black reveal">
   <div class="slab-black-inner">
-    <div class="prop-grid" style="grid-template-columns: repeat(auto-fill, minmax(360px,1fr)); gap:0; border:1px solid rgba(255,255,255,0.07);">
+    <div class="prop-grid" style="grid-template-columns: 1fr 1fr; gap:0; border:1px solid rgba(255,255,255,0.07);">
 
-      <div class="prop-card-b" style="border-bottom:1px solid rgba(255,255,255,0.07);">
+      <div class="prop-card-b" style="border-bottom:1px solid rgba(255,255,255,0.07); border-right:1px solid rgba(255,255,255,0.07);">
         <div class="pc-label-mono" style="color:#666;">Confirmed Property</div>
         <div class="pc-title-b">Piezoresistive<br>Self-Monitoring</div>
-        <div class="pc-body-b">The conductive fiber network acts as a distributed piezoresistive sensor across the entire airframe. Physical strain, fatigue, delamination, or impact damage severs local conductive pathways — causing a <strong>measurable, irreversible increase in bulk resistance</strong> proportional to structural damage state.<br><br>No embedded sensors. No added weight. No additional failure modes.</div>
+        <div class="pc-body-b">The conductive fiber network acts as a distributed piezoresistive sensor across the entire airframe. Strain, fatigue, delamination, or impact severs local conductive pathways — producing a <strong>measurable, irreversible increase in bulk resistance</strong> proportional to structural damage state.<br><br>No embedded sensors. No added weight. No added failure modes.</div>
         <div class="pc-stat-b">Passive</div>
         <div class="pc-stat-sub" style="color:#555;">Zero sensor overhead · Continuous · Irreversible signal</div>
       </div>
 
-      <div class="prop-card-b" style="border-bottom:1px solid rgba(255,255,255,0.07); border-left:1px solid rgba(255,255,255,0.07);">
+      <div class="prop-card-b" style="border-bottom:1px solid rgba(255,255,255,0.07);">
         <div class="pc-label-mono" style="color:#666;">Confirmed Property</div>
         <div class="pc-title-b">Field Damage<br>Assessment</div>
-        <div class="pc-body-b">After any hard landing or contact event, a simple resistance measurement across the airframe quantifies accumulated structural damage. Field maintainers get a pass/fail verdict in seconds — no teardown, no NDT equipment, no specialist required.<br><br>The reading is a <strong>cumulative damage log</strong>. It doesn't reset. It doesn't lie.</div>
+        <div class="pc-body-b">After any hard landing or contact event, a resistance measurement quantifies accumulated structural damage. Field maintainers get a pass/fail verdict in under a minute — no teardown, no NDT equipment, no specialist required.<br><br>The reading is a <strong>cumulative damage log</strong>. It doesn't reset. It doesn't lie.</div>
         <div class="pc-stat-b">&lt;60 sec</div>
-        <div class="pc-stat-sub" style="color:#555;">Time to field structural assessment · No NDT required</div>
+        <div class="pc-stat-sub" style="color:#555;">Time to structural assessment · No NDT technician required</div>
       </div>
 
-      <div class="prop-card-b" style="border-left:1px solid rgba(255,255,255,0.07);">
+      <div class="prop-card-b" style="border-right:1px solid rgba(255,255,255,0.07);">
         <div class="pc-label-mono" style="color:#666;">Confirmed Property</div>
         <div class="pc-title-b">X-Ray Opacity &amp;<br>Adversary Denial</div>
-        <div class="pc-body-b">At just <strong>1/8″ thickness</strong>, DARC is completely opaque to high-resolution X-ray CT scanners. A recovered drone cannot be inspected, reverse-engineered, or internally mapped by adversary intelligence without destructive disassembly.<br><br>Same property enables your own post-flight internal inspection — while denying it to everyone else.</div>
+        <div class="pc-body-b">At <strong>1/8″ structural thickness</strong>, DARC is completely opaque to high-resolution X-ray CT scanners. A recovered drone cannot be inspected, reverse-engineered, or internally mapped without destructive disassembly.<br><br>The same property that denies adversary intelligence also enables your own post-flight structural inspection — while denying the same read to everyone else.</div>
         <div class="pc-stat-b">1/8″</div>
         <div class="pc-stat-sub" style="color:#555;">Complete CT opacity at structural thickness</div>
+      </div>
+
+      <div class="prop-card-b">
+        <div class="pc-label-mono" style="color:#444;">Theory — Under Investigation</div>
+        <div class="pc-title-b">Self-Powered SHM<br>(TENG)</div>
+        <div class="pc-body-b">The chip-to-chip fiber contacts distributed through the 3D network form a triboelectric system. Under structural flex and vibration, relative micro-motion at fiber interfaces generates triboelectric charge — potentially enough to power the piezoresistive SHM circuit intrinsically.<br><br>If validated: <strong>structural health monitoring with zero external power draw</strong>, harvested from the airframe's own loading cycle. Testing is underway.</div>
+        <div class="pc-stat-b">0 W</div>
+        <div class="pc-stat-sub" style="color:#444;">External power draw (theoretical) · TENG-harvested · Under test</div>
       </div>
 
     </div>
@@ -837,8 +905,10 @@
 <!-- ══════════════════════════════════════
      INTERLUDE  ·  glass / translucent
 ══════════════════════════════════════ -->
-<div class="interlude" style="padding: 60px 0; text-align:center;">
-  <div class="ghost-word ghost-dark d-xxl">SHIELDED</div>
+<div class="interlude" style="padding: 100px 0;">
+  <div class="interlude-rule"></div>
+  <div class="ghost-word ghost-dark d-xxl">EMI<br>SHIELDED</div>
+  <div class="interlude-rule"></div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -849,8 +919,8 @@
     <span class="ch-label-num">03</span>
     <span class="ch-label-text">Electromagnetic Armor</span>
   </div>
-  <div class="display d-xl" style="color:#fff;">WHEN THE<br>SIGNAL IS<br>THE WEAPON.</div>
-  <p class="ch-tagline">The airframe becomes a Faraday cage. No additional shielding required.</p>
+  <div class="display d-xl" style="color:#fff;">THE SHIELD<br>IS STRUCTURAL.</div>
+  <p class="ch-tagline">EMI shielding inherent to the material. No films. No foil. No added weight.</p>
 </div>
 
 <!-- ── EMI CONTENT  ·  solid WHITE slab ── -->
@@ -858,20 +928,26 @@
   <div class="slab-white-inner">
     <div class="two-col">
       <div>
-        <div class="ghost-word ghost-light d-lg" style="margin-bottom:32px;">EMI</div>
-        <p class="body-text on-white">At 0.86 Ω bulk resistance, the continuous conductive fiber network inside the DARC airframe presents a massive <strong>impedance mismatch with free space</strong>. Radar energy reflects. High-power microwave pulses — the same ones designed to fry drone electronics — hit an outer skin that looks like a conductor and turn back.</p>
-        <p class="body-text on-white">Waves that do penetrate encounter multiple internal reflections and dielectric loss from the conductive matrix, converting microwave energy to low-grade heat volumetrically rather than letting it reach avionics.</p>
+        <div class="ghost-word ghost-light d-lg" style="margin-bottom:32px;">EMI<br>SHIELDED</div>
+        <p class="body-text on-white">At 0.86 Ω bulk resistance, the conductive fiber network presents a significant <strong>impedance mismatch with free space</strong>. High-power microwave pulses designed to disable drone electronics encounter a conductive outer skin and are largely reflected before reaching avionics.</p>
+        <p class="body-text on-white">Energy that does penetrate encounters further attenuation through multiple internal reflections and dielectric loss within the fiber network. Estimated shielding effectiveness: 40–60 dB.</p>
         <div class="pills" style="margin-top:32px;">
-          <div class="pill filled-w">Reflective EMI shield</div>
-          <div class="pill on-white">40–60 dB SE estimated</div>
+          <div class="pill filled-w">EMI shielded — structural</div>
+          <div class="pill on-white">40–60 dB SE est.</div>
           <div class="pill on-white">HPM-resistant</div>
-          <div class="pill on-white">No added layer</div>
+          <div class="pill on-white">No secondary layer</div>
         </div>
       </div>
       <div>
-        <div class="pull-quote on-white">The shell is the shield.<br>Weight penalty: zero.</div>
-        <p class="body-text on-white">Every other drone on the market requires additional shielding — film, foil, or separate enclosures — to protect GPS receivers, flight controllers, and comms hardware from RF interference and directed energy threats.</p>
-        <p class="body-text on-white">DARC provides that shielding as an inherent property of the structural material itself. There is no weight penalty. There is no additional fabrication step. The airframe <em>is</em> the Faraday cage.</p>
+        <div class="pull-quote on-white">Every other drone adds shielding as an afterthought. This one doesn't need to.</div>
+        <p class="body-text on-white">Protecting GPS receivers, flight controllers, and comms hardware from RF and directed energy threats normally means added films, foils, or enclosures — each with a weight and complexity cost.</p>
+        <p class="body-text on-white">In DARC, EMI shielding is intrinsic to the structural material. No coating. No liner. No added fabrication step. No weight penalty. The airframe <em>is</em> the shield.</p>
+        <hr class="h-rule-w" style="margin: 32px 0;">
+        <div class="ch-label dark" style="margin-bottom:16px;">
+          <span class="ch-label-num">GROUNDING</span>
+          <span class="ch-label-text">Confirmed Property</span>
+        </div>
+        <p class="body-text on-white">The conductive airframe provides a <strong>structural ground plane</strong> throughout. Fewer dedicated ground wires. Less routed wiring harness. Lower assembly complexity, lower component count, fewer potential failure paths — baked into the frame itself.</p>
       </div>
     </div>
   </div>
@@ -880,8 +956,10 @@
 <!-- ══════════════════════════════════════
      INTERLUDE  ·  glass / translucent
 ══════════════════════════════════════ -->
-<div class="interlude" style="padding: 60px 0; text-align:center;">
-  <div class="ghost-word ghost-dark d-xxl">ACTIVE</div>
+<div class="interlude" style="padding: 100px 0;">
+  <div class="interlude-rule"></div>
+  <div class="ghost-word ghost-dark d-xxl">DAMPED</div>
+  <div class="interlude-rule"></div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -892,8 +970,8 @@
     <span class="ch-label-num">04</span>
     <span class="ch-label-text">Vibration &amp; Thermal Management</span>
   </div>
-  <div class="display d-xl" style="color:#fff;">SILENT<br>RUNNING.</div>
-  <p class="ch-tagline">Damp vibration through the laminate. Manage heat through the structure. No added systems.</p>
+  <div class="display d-xl" style="color:#fff;">NO ADDED<br>SYSTEMS.</div>
+  <p class="ch-tagline">Vibration damped through the laminate. Heat managed through the structure. Intrinsic to the material.</p>
 </div>
 
 <!-- ── THERMAL CONTENT  ·  solid BLACK slab ── -->
@@ -905,9 +983,8 @@
           <span class="ch-label-num">DAMPING</span>
           <span class="ch-label-text">Highly Likely</span>
         </div>
-        <p class="body-text on-black">The discontinuous fiber architecture provides superior mechanical damping compared to continuous-fiber laminates. Millions of chip-to-chip fiber interfaces absorb vibration under dynamic loading — converting rotor harmonics and airframe resonance into low-grade heat rather than transmitting them to payload optics and sensors.</p>
-        <p class="body-text on-black">For gimbaled EO/IR payloads and synthetic aperture radar, <strong>the mount is the isolator</strong>. Precision optical systems that normally require active stabilization benefit from passive attenuation built into the structure.</p>
-        <p class="body-text on-black" style="margin-top:22px;">For sensor mounts specifically: the damping is intrinsic. No elastomeric bushings. No isolation platforms. No added mass.</p>
+        <p class="body-text on-black">The discontinuous fiber architecture is expected to provide higher intrinsic mechanical damping than continuous-fiber laminates. Chip-to-chip fiber interfaces attenuate rotor harmonics and airframe resonance before they reach payload optics and sensors. Quantified characterization is ongoing.</p>
+        <p class="body-text on-black">For gimbaled EO/IR payloads, that means <strong>passive isolation built into the mount itself</strong> — no elastomeric bushings, no isolation platforms, no added mass.</p>
         <div class="pills" style="margin-top:28px;">
           <div class="pill filled-b">Higher tan δ than CF laminates</div>
           <div class="pill on-black">Rotor NVH absorption</div>
@@ -916,13 +993,13 @@
         </div>
       </div>
       <div>
-        <div class="pull-quote on-black">The structure wicks heat where metal would concentrate it.</div>
+        <div class="pull-quote on-black">Metal concentrates heat. The conductive network distributes it.</div>
         <div class="ch-label" style="margin-bottom:28px;">
           <span class="ch-label-num">THERMAL</span>
           <span class="ch-label-text">Highly Likely</span>
         </div>
-        <p class="body-text on-black">The 3D conductive fiber network wicks and distributes localized heat from motor controllers, battery packs, and flight computers — spreading it volumetrically through the structure rather than concentrating it at hot spots.</p>
-        <p class="body-text on-black">Battery thermal events are managed at the enclosure level before they escalate. Motor controller heat is conducted into airframe mass rather than building locally. No thermal paste. No heat spreaders. No added weight.</p>
+        <p class="body-text on-black">The 3D conductive fiber network is expected to spread localized heat from motor controllers, battery packs, and avionics volumetrically through the structure rather than letting it concentrate at hot spots. Active characterization is ongoing.</p>
+        <p class="body-text on-black">If confirmed: waste heat conducted into airframe mass rather than building locally. No thermal interface materials. No heat spreaders. No added weight.</p>
         <div class="pills" style="margin-top:28px;">
           <div class="pill on-black">Volumetric heat distribution</div>
           <div class="pill on-black">No thermal paste required</div>
@@ -936,8 +1013,10 @@
 <!-- ══════════════════════════════════════
      INTERLUDE  ·  glass / translucent
 ══════════════════════════════════════ -->
-<div class="interlude" style="padding: 60px 0; text-align:center;">
-  <div class="ghost-word ghost-dark d-xxl">FIELD<br>PROOF</div>
+<div class="interlude" style="padding: 100px 0;">
+  <div class="interlude-rule"></div>
+  <div class="ghost-word ghost-dark d-xxl">FIELD<br>READY</div>
+  <div class="interlude-rule"></div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -957,9 +1036,12 @@
   <div class="slab-white-inner">
     <div class="two-col">
       <div>
-        <div class="ghost-word ghost-light d-md" style="margin-bottom:24px;">UV</div>
-        <p class="body-text on-white">The resin system in DARC is engineered from the ground up for outdoor permanence. The matrix backbone is <strong>inherently UV-stable</strong> at the molecular level — it doesn't undergo the chain scission and chalking that degrades standard epoxies. Multilayer UV protection handles the surface and subsurface.</p>
-        <p class="body-text on-white">The result: no chalking, no yellowing, no surface crazing — under continuous outdoor exposure. No protective coatings required. No recoating intervals.</p>
+        <div class="ch-label dark" style="margin-bottom:24px;">
+          <span class="ch-label-num">UV-RESISTANT</span>
+          <span class="ch-label-text">Confirmed Property</span>
+        </div>
+        <p class="body-text on-white">UV resistance is intrinsic to the resin matrix — not a coating applied afterward. The backbone chemistry doesn't undergo the chain scission and surface chalking that degrades standard epoxies under sustained outdoor exposure.</p>
+        <p class="body-text on-white">No protective topcoat. No recoating schedule. No degradation over time in the field.</p>
         <div class="pills" style="margin-top:28px;">
           <div class="pill filled-w">No chalking · No yellowing</div>
           <div class="pill on-white">Acid/moisture resistant</div>
@@ -968,18 +1050,29 @@
         </div>
       </div>
       <div>
-        <div class="ghost-word ghost-light d-md" style="margin-bottom:24px;">FOUL</div>
-        <p class="body-text on-white">The resin surface migrates during cure to form a <strong>superhydrophobic, low-energy boundary layer</strong>. Marine biological contaminants — barnacles, algae, biofilm — cannot anchor effectively to this surface.</p>
-        <p class="body-text on-white">For maritime patrol drones, ship-launched UAVs, and littoral UAS platforms, this eliminates the fouling problem entirely — without biocide coatings, without scheduled hull cleaning, without performance degradation over deployment duration.</p>
-        <p class="body-text on-white" style="margin-top:22px;">This surface is not applied. It is the surface. It cannot be worn off.</p>
+        <div class="ch-label dark" style="margin-bottom:24px;">
+          <span class="ch-label-num">FOUL-RESISTANT</span>
+          <span class="ch-label-text">Confirmed Property</span>
+        </div>
+        <p class="body-text on-white">During cure, the resin migrates to form a <strong>superhydrophobic, low-surface-energy boundary</strong>. Marine biological contaminants — barnacles, algae, biofilm — cannot anchor effectively to it.</p>
+        <p class="body-text on-white">For maritime patrol drones and ship-launched UAVs, this significantly reduces the fouling problem without biocide coatings or scheduled cleaning. No performance degradation over the deployment period.</p>
+        <p class="body-text on-white" style="margin-top:22px;">Intrinsic to the material. Not applied. Cannot be worn off.</p>
       </div>
+    </div>
+
+    <hr class="h-rule-w" style="margin: 56px 0 48px;">
+
+    <div class="pull-quote on-white" style="max-width: 760px;">Frontline fortified.<br>Zero maintenance tax.</div>
+    <p class="body-text on-white" style="max-width:680px; margin-top:24px;">Most airframe materials impose a maintenance burden in the field. Protective coatings chalk, blister, and need reapplication — which means downtime, labor cost, and added weight with every cycle. DARC carries none of that overhead. UV resistance and surface fouling resistance are intrinsic to the material system. No coating to reapply. No downtime to schedule. No weight accumulation over service life.</p>
+    <div class="pills" style="margin-top:28px;">
+      <div class="pill filled-w">No recoating schedule</div>
+      <div class="pill on-white">No added weight over service life</div>
+      <div class="pill on-white">No maintenance downtime</div>
+      <div class="pill on-white">No labor cost for surface prep</div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     SPECULATIVE WARNING
-══════════════════════════════════════ -->
 <div class="spec-bar reveal" style="margin-top:80px;">
   <div class="spec-bar-icon">[!]</div>
   <div class="spec-bar-text"><strong>[CLASSIFICATION: SPECULATIVE]</strong> Properties below are engineering-feasible but unvalidated. No test data. Grounded in documented physics. Requiring dedicated development programs. Presented as technology potential, not current capability.</div>
@@ -988,42 +1081,72 @@
 <!-- ══════════════════════════════════════
      CH 06 OPENER  ·  glass / translucent
 ══════════════════════════════════════ -->
-<div class="ch-open reveal" style="padding-top:80px;">
+<div class="ch-open reveal">
   <div class="ch-label">
     <span class="ch-label-num">06</span>
-    <span class="ch-label-text">Low Observability — Roadmap</span>
+    <span class="ch-label-text">Manufacturing Advantage</span>
   </div>
-  <div class="display d-xl" style="color:#fff;">TOWARD<br>INVISIBLE.</div>
-  <p class="ch-tagline">High conductivity today is a reflector. Engineered, it becomes a trap. Engineering-feasible. Not yet validated. This is where the material is going.</p>
+  <div class="display d-xl" style="color:#fff;">FORMED,<br>NOT<br>FASTENED.</div>
+  <p class="ch-tagline">One mold. Complex geometry. Integrated features. No bolted-panel assembly.</p>
 </div>
 
-<!-- ── STEALTH CONTENT  ·  solid BLACK slab ── -->
+<!-- ── MANUFACTURING CONTENT  ·  solid BLACK slab ── -->
 <div class="slab-black reveal">
   <div class="slab-black-inner">
-    <div class="prop-grid" style="grid-template-columns:1fr 1fr; gap:0; border:1px solid rgba(255,255,255,0.07);">
-
-      <div class="prop-card-b" style="border-left:none; border-right:1px solid rgba(255,255,255,0.07);">
-        <div class="pc-label-mono" style="color:#666;">Speculative — Engineering-Feasible</div>
-        <div class="pc-title-b">Radar Absorbing<br>Structure (RAS)</div>
-        <div class="pc-body-b">Current DARC conductivity makes the airframe a radar reflector. Engineering a true RAS path requires surface patterning via frequency selective surfaces (FSS) or honeycomb metamaterials — plus an impedance-matching dielectric outer layer that forces wave entry and dissipation into the conductive inner structure.<br><br>The energy-absorbing core already exists. The outer impedance-matching layer is the engineering development required. IR stealth via controlled emissivity tuning is documented in analogous composite aerogels.</div>
-        <div class="pills" style="margin-top:24px;">
-          <div class="pill on-black">FSS surface geometry required</div>
-          <div class="pill on-black">Dielectric outer layer</div>
-          <div class="pill on-black">Conductive-matrix volumetric absorption</div>
+    <div class="two-col" style="margin-bottom:60px;">
+      <div>
+        <div class="ch-label" style="margin-bottom:28px;">
+          <span class="ch-label-num">GEOMETRY</span>
+          <span class="ch-label-text">Confirmed Advantage</span>
+        </div>
+        <p class="body-text on-black">Conventional carbon fiber drone construction starts with flat panels — cut, drilled, bonded, and bolted into shape. Every curve requires a dedicated layup. Every internal feature requires a secondary operation. Every joint is a potential failure path and a weight tax.</p>
+        <p class="body-text on-black">DARC is compression-molded. Complex curves, internal ribs, integrated brackets, and net-shape features emerge from the tool in a single operation. Geometry that would require five bonded panels and a hundred fasteners becomes <strong>one part</strong>. No secondary bonding. No assembly error. Less labor at every stage.</p>
+        <div class="pills" style="margin-top:28px;">
+          <div class="pill filled-b">Net-shape complex geometry</div>
+          <div class="pill on-black">No flat-panel constraint</div>
+          <div class="pill on-black">Fewer parts</div>
+          <div class="pill on-black">Fewer fasteners</div>
         </div>
       </div>
-
-      <div class="prop-card-b" style="border-left:none;">
-        <div class="pc-label-mono" style="color:#666;">Frontier — High Speculation</div>
-        <div class="pc-title-b">DC-Tunable<br>Radar Signature</div>
-        <div class="pc-body-b">The conductive network in DARC has frequency-dependent AC impedance from distributed RC tunneling junctions. Applying a DC bias alters inter-particle tunneling gap widths via electrostrictive and thermal expansion effects — shifting RC time constants and the RF reflection/absorption spectrum in real time.<br><br>This would enable <strong>electronically controlled radar cross-section tuning</strong> without mechanical reconfiguration. Adaptive RCS on demand. No moving parts. Software-defined observability.</div>
-        <div class="pills" style="margin-top:24px;">
-          <div class="pill on-black">DC bias → impedance shift</div>
-          <div class="pill on-black">Dynamic RCS control</div>
-          <div class="pill on-black">No moving parts</div>
+      <div>
+        <div class="pull-quote on-black">Most carbon drones are assembled from panels. This one grows from a mold.</div>
+        <div class="ch-label" style="margin-bottom:28px;">
+          <span class="ch-label-num">INSERTS</span>
+          <span class="ch-label-text">Confirmed Advantage</span>
+        </div>
+        <p class="body-text on-black">Metal threaded inserts, captive fasteners, bushings, and attachment points can be molded directly into the DARC part during the compression cycle. No secondary drilling. No potted inserts. No adhesive bond — the structure itself captures the hardware.</p>
+        <p class="body-text on-black">For payload bays, electronics enclosures, and motor mounts, this means mounting interfaces that are as strong as the airframe — because they <em>are</em> the airframe.</p>
+        <div class="pills" style="margin-top:28px;">
+          <div class="pill on-black">Molded-in metal inserts</div>
+          <div class="pill on-black">No secondary drilling</div>
+          <div class="pill on-black">No potted anchors</div>
         </div>
       </div>
+    </div>
 
+    <hr class="h-rule-b" style="margin-bottom:60px;">
+
+    <div class="two-col">
+      <div>
+        <div class="ch-label" style="margin-bottom:28px;">
+          <span class="ch-label-num">GROUNDING</span>
+          <span class="ch-label-text">Confirmed Property</span>
+        </div>
+        <p class="body-text on-black">The conductive fiber network provides a <strong>structural ground plane</strong> throughout the airframe. Fewer dedicated ground wires. Less routed wiring harness. Lower assembly complexity, lower component count, fewer potential failure paths — baked into the frame rather than added to it.</p>
+        <div class="pills" style="margin-top:28px;">
+          <div class="pill on-black">Structural ground path</div>
+          <div class="pill on-black">Reduced wire runs</div>
+          <div class="pill on-black">Lower assembly weight</div>
+        </div>
+      </div>
+      <div>
+        <div class="ch-label" style="margin-bottom:28px;">
+          <span class="ch-label-num">ASSEMBLY</span>
+          <span class="ch-label-text">Confirmed Advantage</span>
+        </div>
+        <p class="body-text on-black">The labor cost of current carbon drone assembly is dominated by panel handling, drilling, bonding, and fastener installation — not by anything inherent to the design. DARC eliminates most of those operations at the mold stage.</p>
+        <p class="body-text on-black">Fewer parts mean fewer operations, fewer inspection points, fewer opportunities for human error. The complexity is in the tool, not on the assembly floor.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -1031,8 +1154,10 @@
 <!-- ══════════════════════════════════════
      INTERLUDE  ·  glass / translucent
 ══════════════════════════════════════ -->
-<div class="interlude" style="padding:80px 0 40px; text-align:center;">
+<div class="interlude" style="padding: 100px 0;">
+  <div class="interlude-rule"></div>
   <div class="ghost-word ghost-dark d-xxl">MISSION<br>READY</div>
+  <div class="interlude-rule"></div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -1044,7 +1169,7 @@
     <span class="ch-label-text">Platform Applications</span>
   </div>
   <div class="display d-lg" style="color:#fff;">MISSION<br>INDEX.</div>
-  <p class="ch-tagline">Nine platforms. One material system.</p>
+  <p class="ch-tagline">Nine functions. One material system.</p>
 </div>
 
 <!-- ── MISSION CARDS  ·  solid WHITE grid ── -->
@@ -1053,43 +1178,43 @@
   <div class="mission-card">
     <div class="mc-sector">Defense / Commercial</div>
     <div class="mc-title">UAV Primary Airframe</div>
-    <div class="mc-body">Structural performance + EMI shielding + piezoresistive SHM + UV immunity in a single molded part. Every function that normally requires secondary systems, coatings, or embedded hardware is built into the structure itself. Lighter. Simpler. More survivable.</div>
+    <div class="mc-body">Structural performance, EMI shielding, piezoresistive health monitoring, and UV resistance — intrinsic to a single molded part. Every function that normally requires secondary systems, coatings, or embedded hardware is built into the structure itself. Lighter. Simpler. More survivable.</div>
   </div>
 
   <div class="mission-card">
     <div class="mc-sector">Defense / Commercial</div>
     <div class="mc-title">Vibration-Critical Sensor Mount</div>
-    <div class="mc-body">Intrinsic damping attenuates rotor harmonics at the structure. Gimbaled EO/IR and SAR payloads get passive isolation without elastomeric mounts or active stabilization. Piezoresistive monitoring detects mount fatigue before failure. One material. No added hardware.</div>
+    <div class="mc-body">Intrinsic damping attenuates rotor harmonics at the structure level. Gimbaled EO/IR and SAR payloads benefit from passive isolation without elastomeric mounts or active stabilization. Piezoresistive monitoring flags mount fatigue before failure. No added hardware.</div>
   </div>
 
   <div class="mission-card">
     <div class="mc-sector">Defense / Commercial — Strategic</div>
     <div class="mc-title">HAPS Wing &amp; Primary Skin</div>
-    <div class="mc-body">UV immunity eliminates protective coatings for 90-day stratospheric loiter. Radiation crosslinking improves mechanical properties at altitude over the mission lifetime. Superhydrophobic surface prevents ice adhesion at stratospheric temperatures. Multi-piece molding required for full-span skins.</div>
+    <div class="mc-body">UV-resistant matrix eliminates protective coatings for 90-day stratospheric loiter. Radiation crosslinking is expected to improve mechanical properties at altitude over the mission lifetime. Intrinsic superhydrophobic surface resists ice adhesion at stratospheric temperatures. Multi-piece molding required for full-span skins.</div>
   </div>
 
   <div class="mission-card">
     <div class="mc-sector">Defense</div>
     <div class="mc-title">Electronic Warfare Pod Shell</div>
-    <div class="mc-body">Full-spectrum EMI shielding prevents self-jamming. X-ray opacity defeats adversary inspection of recovered hardware. Pseudo-ductile failure contains fragment spall under gun-blast overpressure. One shell does the work of three separate systems.</div>
+    <div class="mc-body">Intrinsic EMI shielding prevents self-jamming. X-ray opacity defeats adversary inspection of recovered hardware. Pseudo-ductile failure contains fragment spall under overpressure events. Three capabilities. One structural shell.</div>
   </div>
 
   <div class="mission-card">
     <div class="mc-sector">Defense</div>
     <div class="mc-title">HPM Weapon Aperture Housing</div>
-    <div class="mc-body">Tunable conductive network confines stray radiation during emission events. Radiation crosslinking provides resistance to repeated HPM exposure cycles. Lightweight for aircraft and drone external pod mounting.</div>
+    <div class="mc-body">Conductive network confines stray radiation during high-power emission events. Radiation crosslinking is expected to improve resistance to repeated HPM exposure cycles. Low density makes it viable for aircraft and drone external pod mounting.</div>
   </div>
 
   <div class="mission-card">
     <div class="mc-sector">Defense</div>
     <div class="mc-title">C-UAS Antenna Pedestal</div>
-    <div class="mc-body">Low density speeds antenna slewing for faster target acquisition. EMI shielding contains self-generated RF, preventing cross-talk with co-located radar. Pseudo-ductile failure contains fragment spall from proximity detonation.</div>
+    <div class="mc-body">Low density speeds antenna slewing for faster target acquisition. Intrinsic EMI shielding contains self-generated RF, preventing cross-talk with co-located radar systems. Pseudo-ductile failure resists fragment spall from proximity detonation.</div>
   </div>
 
   <div class="mission-card">
     <div class="mc-sector">Defense</div>
     <div class="mc-title">ISR / Sensor Pod Shell</div>
-    <div class="mc-body">X-ray opacity plus EMI shielding conceals antenna geometry and internal layout from adversary intelligence. Lightweight structure maximizes loiter time. UV-stable without coatings for extended pre-deployment storage.</div>
+    <div class="mc-body">X-ray opacity plus intrinsic EMI shielding conceals antenna geometry and internal layout from adversary inspection of recovered hardware. Lightweight structure maximizes loiter time. UV-resistant without coatings — survives extended pre-deployment storage.</div>
   </div>
 
   <div class="mission-card">
@@ -1143,6 +1268,9 @@
 
 <footer>
   <div class="footer-brand">DARC</div>
+  <div class="footer-logo">
+    <img src="bgslogowhite.png" alt="BGS Engineering">
+  </div>
   <div class="footer-note">
     Discontinuous Advanced Resin Composite<br>
     Unmanned Systems Applications<br>
@@ -1164,7 +1292,6 @@
   const ldPct   = document.getElementById('ld-pct');
   const prog    = document.getElementById('scroll-prog');
   const hud     = document.getElementById('frame-hud');
-  const navEl   = document.getElementById('nav');
 
   // Closing canvas — canvas punch-out DARC
   const closingSection = document.getElementById('closing-section');
@@ -1234,8 +1361,7 @@
       const max  = document.documentElement.scrollHeight - window.innerHeight;
       const p    = max > 0 ? window.scrollY / max : 0;
       prog.style.width = (p * 100).toFixed(2) + '%';
-      navEl.classList.toggle('scrolled', window.scrollY > 60);
-      const idx = Math.min(TOTAL - 1, Math.floor(p * TOTAL));
+const idx = Math.min(TOTAL - 1, Math.floor(p * TOTAL));
       if (idx !== currentFrame) {
         currentFrame = idx;
         draw(idx);
