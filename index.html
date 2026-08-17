@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BGS Engineering | Advanced Material Systems</title>
+  <meta name="description" content="BGS Engineering develops advanced composite material systems for defense, space, and high-performance applications. Albuquerque, NM.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,700;0,900;1,300&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─────────────────────────────────────
+       TOKENS
+    ───────────────────────────────────── */
+    :root {
+      --black:   #000000;
+      --near:    #0d0d0d;
+      --dark:    #1a1a1a;
+      --mid:     #555555;
+      --muted:   #888888;
+      --light:   #cccccc;
+      --off:     #f0f0f0;
+      --white:   #ffffff;
+      --rule:    rgba(255,255,255,0.10);
+      --rule-b:  rgba(0,0,0,0.10);
+    }
+
+    /* ─────────────────────────────────────
+       RESET
+    ───────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+
+    /* ─────────────────────────────────────
+       LOADER
+    ───────────────────────────────────── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      transition: opacity 0.9s ease;
+    }
+    #loader.out { opacity: 0; pointer-events: none; }
+    .ld-logo { width: 140px; opacity: 0.95; }
+    .ld-track { width: 180px; height: 1px; background: rgba(255,255,255,0.10); }
+    #ld-bar { height: 1px; width: 0%; background: #fff; transition: width 0.05s linear; }
+    #ld-pct {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ─────────────────────────────────────
+       CLASSIFICATION STRIP
+    ───────────────────────────────────── */
+    #doc-strip {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 300;
+      background: rgba(0,0,0,0.88);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 7px 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hero-logo {
+      position: absolute;
+      top: 52px;
+      right: 56px;
+      width: 150px;
+      opacity: 0.92;
+    }
+    .strip-class {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* ─────────────────────────────────────
+       SCROLL PROGRESS
+    ───────────────────────────────────── */
+    #scroll-prog {
+      position: fixed;
+      top: 33px; left: 0;
+      height: 1px;
+      width: 0%;
+      background: rgba(255,255,255,0.45);
+      z-index: 500;
+      transition: width 0.05s linear;
+    }
+
+    /* ─────────────────────────────────────
+       CANVAS (subtle grain / field)
+    ───────────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw; height: 100vh;
+      z-index: -2;
+      opacity: 0.4;
+    }
+    #vignette {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.05) 20%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.7) 100%),
+        radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, rgba(0,0,0,0.5) 100%);
+    }
+
+    /* ─────────────────────────────────────
+       DISPLAY TYPE
+    ───────────────────────────────────── */
+    .display {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+    }
+    .d-xxl { font-size: clamp(100px, 20vw, 240px); }
+    .d-xl  { font-size: clamp( 72px, 14vw, 180px); }
+    .d-lg  { font-size: clamp( 52px, 10vw, 128px); }
+    .d-md  { font-size: clamp( 36px,  6vw,  80px); }
+    .d-sm  { font-size: clamp( 24px,  4vw,  48px); }
+
+    /* ─────────────────────────────────────
+       SECTION LABEL CHIP
+    ───────────────────────────────────── */
+    .ch-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 28px;
+    }
+    .ch-label-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: #fff;
+      color: #000;
+      padding: 5px 10px;
+    }
+    .ch-label-text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-left: none;
+      color: rgba(255,255,255,0.45);
+      padding: 5px 14px;
+    }
+    .ch-label.dark .ch-label-num { background: #000; color: #fff; }
+    .ch-label.dark .ch-label-text { border-color: rgba(0,0,0,0.18); color: rgba(0,0,0,0.4); }
+
+    /* ─────────────────────────────────────
+       01 — HERO
+    ───────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 33px 56px 96px;
+      position: relative;
+    }
+    .hero-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.58);
+      margin-bottom: 20px;
+    }
+    #hero h1 {
+      font-size: clamp(100px, 20vw, 240px);
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+      color: #fff;
+      margin-bottom: 40px;
+    }
+    .hero-sub {
+      font-size: 17px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.75);
+      max-width: 500px;
+      line-height: 1.75;
+      letter-spacing: 0.01em;
+    }
+    .scroll-cue {
+      position: absolute;
+      bottom: 40px; right: 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      animation: nudge 2.6s ease-in-out infinite;
+    }
+    .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, rgba(255,255,255,0.35), transparent); }
+    @keyframes nudge { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+    /* ─────────────────────────────────────
+       02 — DARC SECTION
+    ───────────────────────────────────── */
+    #darc {
+      background: #000;
+      padding: 120px 56px 100px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .darc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 96px;
+      align-items: start;
+      max-width: 1200px;
+    }
+    .darc-left {}
+    .darc-headline {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: clamp(72px, 12vw, 160px);
+      line-height: 0.85;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 48px;
+    }
+    .darc-right {
+      padding-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+    .darc-block {}
+    .darc-block-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.48);
+      margin-bottom: 10px;
+    }
+    .darc-block-body {
+      font-size: 16px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.75;
+      max-width: 480px;
+    }
+
+    /* attribute pills */
+    .attr-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.06);
+      margin-top: 56px;
+      max-width: 580px;
+    }
+    .attr-cell {
+      background: #000;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .attr-cell:hover { background: rgba(255,255,255,0.03); }
+    .attr-val {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: clamp(26px, 3vw, 38px);
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: #fff;
+    }
+    .attr-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.50);
+    }
+
+    /* ─────────────────────────────────────
+       03 — VIDEO SECTION
+    ───────────────────────────────────── */
+    #render-video {
+      background: #000;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      position: relative;
+    }
+    .video-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 24px 56px 20px;
+    }
+    .video-note {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+    .render-video {
+      display: block;
+      width: 100%;
+      max-height: 72vh;
+      object-fit: cover;
+    }
+
+    /* ─────────────────────────────────────
+       04 — MARKETS
+    ───────────────────────────────────── */
+    #markets {
+      background: #000;
+      padding: 120px 56px 110px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .markets-super {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.50);
+      margin-bottom: 56px;
+    }
+    .markets-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
+      max-width: 1100px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .market-cell {
+      background: #000;
+      padding: 40px 32px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: background 0.25s ease;
+    }
+    .market-cell:hover { background: rgba(255,255,255,0.04); }
+    .market-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.40);
+    }
+    .market-name {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: clamp(28px, 3.5vw, 44px);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      line-height: 0.92;
+      color: #fff;
+    }
+    .market-desc {
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.65;
+      margin-top: 4px;
+    }
+
+    /* ─────────────────────────────────────
+       05 — PATENT / STATUS BAND
+    ───────────────────────────────────── */
+    #status-band {
+      background: rgba(255,255,255,0.03);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 28px 56px;
+      display: flex;
+      align-items: center;
+      gap: 48px;
+    }
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.65);
+      flex-shrink: 0;
+    }
+    .status-text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.58);
+    }
+    .status-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* ─────────────────────────────────────
+       06 — SUPPORTERS / AFFILIATES
+    ───────────────────────────────────── */
+    #supporters {
+      background: #000;
+      padding: 100px 56px 96px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .supporters-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 64px;
+      max-width: 1100px;
+    }
+    .supporters-hed {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: clamp(32px, 5vw, 64px);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      line-height: 0.9;
+      color: #fff;
+    }
+    .supporters-note {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      max-width: 240px;
+      line-height: 1.8;
+      text-align: right;
+    }
+    .supporters-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.06);
+      max-width: 1100px;
+    }
+    .supporter-cell {
+      background: #fff;
+      padding: 36px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+      transition: background 0.15s ease;
+    }
+    .supporter-cell:hover { background: #f0f0f0; }
+    .tio-logo { max-width: 200px; width: 100%; }
+    .partner-logo { max-height: 48px; width: auto; max-width: 180px; }
+    .supporter-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    /* ─────────────────────────────────────
+       07 — CONTACT / FOOTER
+    ───────────────────────────────────── */
+    #contact {
+      background: #000;
+      padding: 120px 56px 48px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      max-width: 1100px;
+      margin-bottom: 96px;
+    }
+    .contact-left {}
+    .contact-hed {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: clamp(60px, 10vw, 130px);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      line-height: 0.84;
+      color: #fff;
+      margin-bottom: 40px;
+    }
+    .contact-sub {
+      font-size: 16px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.68);
+      line-height: 1.8;
+      max-width: 420px;
+    }
+    .contact-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 32px;
+    }
+    .contact-block-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.48);
+      margin-bottom: 8px;
+    }
+    .contact-value {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.7;
+    }
+    .contact-value a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .contact-value a:hover {
+      color: #fff;
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    /* footer bar */
+    .footer-bar {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+    }
+    .footer-copy {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+    }
+    .footer-logo { width: 64px; opacity: 0.3; }
+
+    /* ─────────────────────────────────────
+       FADE-IN ON SCROLL
+    ───────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────── */
+    @media (max-width: 900px) {
+      #doc-strip { padding: 7px 24px; }
+      #hero { padding: 33px 24px 80px; }
+      .hero-logo { width: 100px; right: 24px; top: 44px; }
+      #darc { padding: 80px 24px 72px; }
+      .darc-grid { grid-template-columns: 1fr; gap: 48px; }
+      #render-video .video-header { padding: 20px 24px 16px; }
+      #markets { padding: 80px 24px 72px; }
+      .markets-grid { grid-template-columns: 1fr 1fr; }
+      #status-band { padding: 20px 24px; flex-wrap: wrap; gap: 24px; }
+      #supporters { padding: 72px 24px 64px; }
+      .supporters-grid { grid-template-columns: 1fr 1fr; }
+      .supporters-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .supporters-note { text-align: left; max-width: 100%; }
+      #contact { padding: 80px 24px 36px; }
+      .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .scroll-cue { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <img class="ld-logo" src="bgslogowhite.png" alt="BGS Engineering">
+    <div class="ld-track"><div id="ld-bar"></div></div>
+    <div id="ld-pct">000</div>
+  </div>
+
+  <!-- CLASSIFICATION STRIP -->
+  <div id="doc-strip">
+    <span class="strip-class">Advanced Material Systems &nbsp;·&nbsp; Albuquerque, NM &nbsp;·&nbsp; Patent Pending</span>
+  </div>
+
+  <!-- SCROLL PROGRESS -->
+  <div id="scroll-prog"></div>
+
+  <!-- SUBTLE GRAIN FIELD -->
+  <canvas id="bg-canvas"></canvas>
+  <div id="vignette"></div>
+
+  <!-- ══════════════════════════════════
+       01 — HERO
+  ══════════════════════════════════ -->
+  <section id="hero">
+    <img class="hero-logo" src="bgslogowhite.png" alt="BGS Engineering">
+    <div class="hero-content">
+      <div class="hero-eyebrow">BGS Engineering &nbsp;/&nbsp; Albuquerque, NM &nbsp;/&nbsp; Est. 2024</div>
+      <h1 class="display d-xxl">Nothing<br>bolted<br>on.</h1>
+      <p class="hero-sub">
+        Structural performance. Electromagnetic properties.<br>
+        Manufacturing economics. One material.
+      </p>
+    </div>
+
+    <div class="scroll-cue">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       02 — DARC
+  ══════════════════════════════════ -->
+  <section id="darc">
+    <div class="darc-grid reveal">
+      <div class="darc-left">
+        <div class="ch-label">
+          <span class="ch-label-num">02</span>
+          <span class="ch-label-text">The Material</span>
+        </div>
+        <div class="darc-headline">DARC</div>
+
+        <div class="attr-grid">
+          <div class="attr-cell">
+            <div class="attr-val">Structural</div>
+            <div class="attr-label">On par with titanium</div>
+          </div>
+          <div class="attr-cell">
+            <div class="attr-val">Light</div>
+            <div class="attr-label">Below titanium density</div>
+          </div>
+          <div class="attr-cell">
+            <div class="attr-val">EMI / ESD</div>
+            <div class="attr-label">Shielding and charge dissipation</div>
+          </div>
+          <div class="attr-cell">
+            <div class="attr-val">Scalable</div>
+            <div class="attr-label">Assembly velocity model</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="darc-right">
+        <div class="darc-block">
+          <div class="darc-block-label">Designation</div>
+          <p class="darc-block-body">
+            Discontinuous Advanced Resin Composite. A quasi-isotropic matrix
+            built from short discontinuous carbon fiber, engineered to process
+            at scale without the autoclave constraint that defines conventional
+            composites.
+          </p>
+        </div>
+        <div class="darc-block">
+          <div class="darc-block-label">The difference</div>
+          <p class="darc-block-body">
+            Conventional composites force a trade: performance or cost.
+            DARC collapses that trade. Engineered to be net-shape from
+            the mold, it eliminates the autoclave constraint and compresses
+            the manufacturing timeline in ways that change the unit economics
+            of high-performance structure.
+          </p>
+        </div>
+        <div class="darc-block">
+          <div class="darc-block-label">The property set</div>
+          <p class="darc-block-body">
+            Specific strength at titanium parity. EMI shielding and ESD
+            capability engineered into the matrix. Environmental durability
+            designed in, not added on. Patent pending.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       03 — RENDER VIDEO
+  ══════════════════════════════════ -->
+  <section id="render-video">
+    <div class="video-header">
+      <div class="ch-label">
+        <span class="ch-label-num">03</span>
+        <span class="ch-label-text">DARC in Application</span>
+      </div>
+      <span class="video-note">Concept Renders</span>
+    </div>
+    <video class="render-video" id="render-vid" autoplay muted playsinline>
+      <source src="drone-render.mp4" type="video/mp4">
+    </video>
+  </section>
+
+  <!-- ══════════════════════════════════
+       04 — MARKETS
+  ══════════════════════════════════ -->
+  <section id="markets">
+    <div class="ch-label reveal">
+      <span class="ch-label-num">04</span>
+      <span class="ch-label-text">Markets Served</span>
+    </div>
+    <div class="markets-super reveal">Where the property set is a force multiplier</div>
+
+    <div class="markets-grid reveal">
+      <div class="market-cell">
+        <div class="market-num">01</div>
+        <div class="market-name">Defense</div>
+        <div class="market-desc">Attritable and autonomous platforms. Structural enclosures. Airframes demanding material intelligence at scale.</div>
+      </div>
+      <div class="market-cell">
+        <div class="market-num">02</div>
+        <div class="market-name">Space</div>
+        <div class="market-desc">Lightweight structure with environmental resistance at a weight class metals can't match.</div>
+      </div>
+      <div class="market-cell">
+        <div class="market-num">03</div>
+        <div class="market-name">Automotive</div>
+        <div class="market-desc">Performance and motorsport applications where structural mass is the enemy and volume production is the mandate.</div>
+      </div>
+      <div class="market-cell">
+        <div class="market-num">04</div>
+        <div class="market-name">Industrial</div>
+        <div class="market-desc">High-value components where environmental durability and unconventional properties justify the conversation.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       05 — STATUS BAND
+  ══════════════════════════════════ -->
+  <div id="status-band">
+    <div class="status-item">
+      <div class="status-dot"></div>
+      <span class="status-text">Patent Pending</span>
+    </div>
+    <div class="status-divider"></div>
+    <div class="status-item">
+      <div class="status-dot"></div>
+      <span class="status-text">NM Science &amp; Technology Business Startup Grant Recipient</span>
+    </div>
+    <div class="status-divider"></div>
+    <div class="status-item">
+      <div class="status-dot"></div>
+      <span class="status-text">RF &amp; EM Characterization, Independently Verified</span>
+    </div>
+    <div class="status-divider"></div>
+    <div class="status-item">
+      <div class="status-dot"></div>
+      <span class="status-text">Active R&amp;D Collaborations, NM Research Institutions</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       06 — SUPPORTERS
+  ══════════════════════════════════ -->
+  <section id="supporters">
+    <div class="supporters-header reveal">
+      <div class="ch-label">
+          <span class="ch-label-num">05</span>
+          <span class="ch-label-text">Ecosystem &amp; Affiliates</span>
+        </div>
+      <div class="supporters-hed">Ecosystem<br>&amp; Affiliates</div>
+      <div class="supporters-note">
+        BGS Engineering operates within a growing network of
+        research institutions, government programs, and
+        industry partners.
+      </div>
+    </div>
+
+    <div class="supporters-grid reveal">
+      <div class="supporter-cell">
+        <img class="tio-logo" src="TIOLogo.jpg" alt="NM Technology and Innovation Office">
+      </div>
+      <div class="supporter-cell">
+        <img class="partner-logo" src="logo-nmsba.png" alt="NM Small Business Alliance">
+      </div>
+      <div class="supporter-cell">
+        <img class="partner-logo" src="logo-nmstartup.png" alt="NM Startup Alliance" style="filter:invert(1)">
+      </div>
+      <div class="supporter-cell">
+        <img class="partner-logo" src="logo-arrowhead.png" alt="Arrowhead Center" style="max-height:68px">
+      </div>
+      <div class="supporter-cell">
+        <img class="partner-logo" src="logo-nmt.jpg" alt="New Mexico Tech">
+      </div>
+      <div class="supporter-cell">
+        <img class="partner-logo" src="logo-qstation.jpg" alt="Q Station">
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       07 — CONTACT
+  ══════════════════════════════════ -->
+  <section id="contact">
+    <div class="contact-grid">
+      <div class="contact-left reveal">
+        <div class="ch-label">
+          <span class="ch-label-num">06</span>
+          <span class="ch-label-text">Contact</span>
+        </div>
+        <div class="contact-hed">Welcoming<br>conversations.</div>
+        <p class="contact-sub">
+          If your application demands something the current market
+          can't deliver, we're interested in the problem. Reach out.
+        </p>
+      </div>
+      <div class="contact-right reveal">
+        <div>
+          <div class="contact-block-label">General Inquiries</div>
+          <div class="contact-value">
+            <a href="mailto:info@bgsengineering.com">info@bgsengineering.com</a>
+          </div>
+        </div>
+        <div>
+          <div class="contact-block-label">Address</div>
+          <div class="contact-value">
+            8524 Indian School Rd NE<br>
+            Albuquerque, NM 87112
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <span class="footer-copy">&copy; 2024&ndash;2026 BGS Engineering, LLC &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; Patent Pending</span>
+      <img class="footer-logo" src="bgslogowhite.png" alt="BGS Engineering">
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════ -->
+  <script>
+    /* ── loader ── */
+    const bar = document.getElementById('ld-bar');
+    const pct = document.getElementById('ld-pct');
+    const loader = document.getElementById('loader');
+    let progress = 0;
+    const tick = setInterval(() => {
+      progress += Math.random() * 14 + 4;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(tick);
+        setTimeout(() => { loader.classList.add('out'); }, 220);
+      }
+      bar.style.width = progress + '%';
+      pct.textContent = String(Math.floor(progress)).padStart(3, '0');
+    }, 60);
+
+    /* ── scroll progress ── */
+    const prog = document.getElementById('scroll-prog');
+    window.addEventListener('scroll', () => {
+      const max = document.body.scrollHeight - window.innerHeight;
+      prog.style.width = (window.scrollY / max * 100) + '%';
+    }, { passive: true });
+
+    /* ── reveal on scroll ── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ── ping-pong video ── */
+    (function pingPong() {
+      const vid = document.getElementById('render-vid');
+      if (!vid) return;
+      let reversing = false;
+      let timer = null;
+
+      vid.addEventListener('ended', () => {
+        if (reversing) return;
+        reversing = true;
+        let pos = vid.duration; // don't trust currentTime; it may have reset
+        timer = setInterval(() => {
+          pos = Math.max(0, pos - 0.033);
+          vid.currentTime = pos;
+          if (pos <= 0) {
+            clearInterval(timer);
+            timer = null;
+            reversing = false;
+            vid.play();
+          }
+        }, 33);
+      });
+    })();
+
+    /* ── subtle grain canvas (~12fps to avoid CPU burn) ── */
+    (function grain() {
+      const c = document.getElementById('bg-canvas');
+      const ctx = c.getContext('2d');
+      let w, h;
+      function resize() { c.width = w = window.innerWidth; c.height = h = window.innerHeight; }
+      resize();
+      window.addEventListener('resize', resize);
+      function draw() {
+        const img = ctx.createImageData(w, h);
+        const d = img.data;
+        for (let i = 0; i < d.length; i += 4) {
+          const v = (Math.random() * 28) | 0;
+          d[i] = d[i+1] = d[i+2] = v;
+          d[i+3] = 255;
+        }
+        ctx.putImageData(img, 0, 0);
+        setTimeout(() => requestAnimationFrame(draw), 80);
+      }
+      requestAnimationFrame(draw);
+    })();
+  </script>
+</body>
+</html>
