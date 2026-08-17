@@ -1,2 +1,0 @@
-# BGSEngineering.github.io
-BGSEngineering
