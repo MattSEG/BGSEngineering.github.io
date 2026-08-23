@@ -340,8 +340,9 @@
     #render-video {
       background: #000;
       border-top: 1px solid rgba(255,255,255,0.05);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
       position: relative;
+      z-index: 1;
+      min-height: 80vh;
     }
     .video-header {
       display: flex;
@@ -424,13 +425,16 @@
        05 — PATENT / STATUS BAND
     ───────────────────────────────────── */
     #status-band {
-      background: rgba(255,255,255,0.03);
+      background: rgba(0,0,0,0.75);
       border-top: 1px solid rgba(255,255,255,0.06);
       border-bottom: 1px solid rgba(255,255,255,0.06);
       padding: 28px 56px;
       display: flex;
       align-items: center;
       gap: 48px;
+      margin-top: -180px;
+      position: relative;
+      z-index: 2;
     }
     .status-item {
       display: flex;
@@ -617,8 +621,9 @@
       border-top: 1px solid rgba(255,255,255,0.06);
       padding: 24px 0;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
+      gap: 32px;
       max-width: 1100px;
     }
     .footer-copy {
@@ -628,7 +633,7 @@
       text-transform: uppercase;
       color: rgba(255,255,255,0.38);
     }
-    .footer-logo { width: 64px; opacity: 0.3; }
+    .footer-logo { width: 160px; opacity: 1; margin: 40px auto 0; display: block; }
 
     /* ─────────────────────────────────────
        FADE-IN ON SCROLL
@@ -692,7 +697,6 @@
        01 — HERO
   ══════════════════════════════════ -->
   <section id="hero">
-    <img class="hero-logo" src="BGSNewLogoWhite.png" alt="BGS Engineering">
     <div class="hero-content">
       <div class="hero-eyebrow">BGS Engineering &nbsp;/&nbsp; Albuquerque, NM &nbsp;/&nbsp; Est. 2024</div>
       <h1 class="display d-xxl">Nothing<br>bolted<br>on<img class="period-mark" src="BGSLogoNewMarkOnlyWhite.png" alt="."></h1>
@@ -783,7 +787,7 @@
       </div>
       <span class="video-note">Concept Renders</span>
     </div>
-    <video class="render-video" id="render-vid" autoplay muted playsinline>
+    <video class="render-video" autoplay muted playsinline>
       <source src="drone-render.mp4" type="video/mp4">
     </video>
   </section>
@@ -967,30 +971,6 @@
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
     }, { threshold: 0.08 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    /* ── ping-pong video ── */
-    (function pingPong() {
-      const vid = document.getElementById('render-vid');
-      if (!vid) return;
-      let reversing = false;
-      let timer = null;
-
-      vid.addEventListener('ended', () => {
-        if (reversing) return;
-        reversing = true;
-        let pos = vid.duration; // don't trust currentTime; it may have reset
-        timer = setInterval(() => {
-          pos = Math.max(0, pos - 0.033);
-          vid.currentTime = pos;
-          if (pos <= 0) {
-            clearInterval(timer);
-            timer = null;
-            reversing = false;
-            vid.play();
-          }
-        }, 33);
-      });
-    })();
 
     /* ── subtle grain canvas (~12fps to avoid CPU burn) ── */
     (function grain() {
