@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BGS Engineering | Advanced Material Systems</title>
+  <link rel="icon" type="image/png" href="BGSLogoNewMarkOnlyWhite.png">
   <meta name="description" content="BGS Engineering develops advanced composite material systems for defense, space, and high-performance applications. Albuquerque, NM.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,700;0,900;1,300&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,700;0,900;1,300&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" crossorigin="anonymous">
 
   <style>
     /* ─────────────────────────────────────
@@ -31,6 +32,10 @@
     ───────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
     body {
       background: #000;
       color: #fff;
@@ -57,7 +62,7 @@
       transition: opacity 0.9s ease;
     }
     #loader.out { opacity: 0; pointer-events: none; }
-    .ld-logo { width: 140px; opacity: 0.95; }
+    .ld-logo { width: 180px; opacity: 0.95; }
     .ld-track { width: 180px; height: 1px; background: rgba(255,255,255,0.10); }
     #ld-bar { height: 1px; width: 0%; background: #fff; transition: width 0.05s linear; }
     #ld-pct {
@@ -77,17 +82,21 @@
       z-index: 300;
       background: rgba(0,0,0,0.88);
       border-bottom: 1px solid rgba(255,255,255,0.06);
-      padding: 7px 56px;
+      padding: 12px 56px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     .hero-logo {
       position: absolute;
-      top: 52px;
+      top: 90px;
       right: 56px;
-      width: 150px;
-      opacity: 0.92;
+      width: 120px;
+      opacity: 0.95;
+    }
+    .strip-mark {
+      width: 28px;
+      opacity: 0.72;
     }
     .strip-class {
       font-family: 'IBM Plex Mono', monospace;
@@ -102,7 +111,7 @@
     ───────────────────────────────────── */
     #scroll-prog {
       position: fixed;
-      top: 33px; left: 0;
+      top: 52px; left: 0;
       height: 1px;
       width: 0%;
       background: rgba(255,255,255,0.45);
@@ -212,6 +221,16 @@
       max-width: 500px;
       line-height: 1.75;
       letter-spacing: 0.01em;
+    }
+    .period-mark {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      margin-left: 6px;
+      margin-bottom: -2px;
+      vertical-align: baseline;
+      object-fit: contain;
+      opacity: 0.95;
     }
     .scroll-cue {
       position: absolute;
@@ -630,7 +649,7 @@
     @media (max-width: 900px) {
       #doc-strip { padding: 7px 24px; }
       #hero { padding: 33px 24px 80px; }
-      .hero-logo { width: 100px; right: 24px; top: 44px; }
+      .hero-logo { width: 100px; right: 24px; top: 80px; }
       #darc { padding: 80px 24px 72px; }
       .darc-grid { grid-template-columns: 1fr; gap: 48px; }
       #render-video .video-header { padding: 20px 24px 16px; }
@@ -651,13 +670,14 @@
 
   <!-- LOADER -->
   <div id="loader">
-    <img class="ld-logo" src="bgslogowhite.png" alt="BGS Engineering">
+    <img class="ld-logo" src="BGSNewLogoWhite.png" alt="BGS Engineering">
     <div class="ld-track"><div id="ld-bar"></div></div>
     <div id="ld-pct">000</div>
   </div>
 
   <!-- CLASSIFICATION STRIP -->
   <div id="doc-strip">
+    <img class="strip-mark" src="BGSLogoNewMarkOnlyWhite.png" alt="BGS Engineering">
     <span class="strip-class">Advanced Material Systems &nbsp;·&nbsp; Albuquerque, NM &nbsp;·&nbsp; Patent Pending</span>
   </div>
 
@@ -672,10 +692,10 @@
        01 — HERO
   ══════════════════════════════════ -->
   <section id="hero">
-    <img class="hero-logo" src="bgslogowhite.png" alt="BGS Engineering">
+    <img class="hero-logo" src="BGSNewLogoWhite.png" alt="BGS Engineering">
     <div class="hero-content">
       <div class="hero-eyebrow">BGS Engineering &nbsp;/&nbsp; Albuquerque, NM &nbsp;/&nbsp; Est. 2024</div>
-      <h1 class="display d-xxl">Nothing<br>bolted<br>on.</h1>
+      <h1 class="display d-xxl">Nothing<br>bolted<br>on<img class="period-mark" src="BGSLogoNewMarkOnlyWhite.png" alt="."></h1>
       <p class="hero-sub">
         Structural performance. Electromagnetic properties.<br>
         Manufacturing economics. One material.
@@ -907,7 +927,7 @@
 
     <div class="footer-bar">
       <span class="footer-copy">&copy; 2024&ndash;2026 BGS Engineering, LLC &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; Patent Pending</span>
-      <img class="footer-logo" src="bgslogowhite.png" alt="BGS Engineering">
+      <img class="footer-logo" src="BGSNewLogoWhite.png" alt="BGS Engineering">
     </div>
   </section>
 
@@ -919,17 +939,21 @@
     const bar = document.getElementById('ld-bar');
     const pct = document.getElementById('ld-pct');
     const loader = document.getElementById('loader');
+    const LOADER_TICK_MS = 60;
+    const LOADER_STEP_MIN = 4;
+    const LOADER_STEP_MAX = 14;
+    const LOADER_FADE_DELAY = 220;
     let progress = 0;
     const tick = setInterval(() => {
-      progress += Math.random() * 14 + 4;
+      progress += Math.random() * LOADER_STEP_MAX + LOADER_STEP_MIN;
       if (progress >= 100) {
         progress = 100;
         clearInterval(tick);
-        setTimeout(() => { loader.classList.add('out'); }, 220);
+        setTimeout(() => { loader.classList.add('out'); }, LOADER_FADE_DELAY);
       }
       bar.style.width = progress + '%';
       pct.textContent = String(Math.floor(progress)).padStart(3, '0');
-    }, 60);
+    }, LOADER_TICK_MS);
 
     /* ── scroll progress ── */
     const prog = document.getElementById('scroll-prog');
@@ -972,20 +996,27 @@
     (function grain() {
       const c = document.getElementById('bg-canvas');
       const ctx = c.getContext('2d');
-      let w, h;
-      function resize() { c.width = w = window.innerWidth; c.height = h = window.innerHeight; }
+      let w, h, img, lastFrame = 0;
+      const FRAME_INTERVAL = 80;
+      function resize() {
+        c.width = w = window.innerWidth;
+        c.height = h = window.innerHeight;
+        img = ctx.createImageData(w, h);
+      }
       resize();
       window.addEventListener('resize', resize);
-      function draw() {
-        const img = ctx.createImageData(w, h);
-        const d = img.data;
-        for (let i = 0; i < d.length; i += 4) {
-          const v = (Math.random() * 28) | 0;
-          d[i] = d[i+1] = d[i+2] = v;
-          d[i+3] = 255;
+      function draw(now) {
+        if (now - lastFrame >= FRAME_INTERVAL) {
+          const d = img.data;
+          for (let i = 0; i < d.length; i += 4) {
+            const v = (Math.random() * 28) | 0;
+            d[i] = d[i+1] = d[i+2] = v;
+            d[i+3] = 255;
+          }
+          ctx.putImageData(img, 0, 0);
+          lastFrame = now;
         }
-        ctx.putImageData(img, 0, 0);
-        setTimeout(() => requestAnimationFrame(draw), 80);
+        requestAnimationFrame(draw);
       }
       requestAnimationFrame(draw);
     })();
