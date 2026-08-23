@@ -357,11 +357,51 @@
       text-transform: uppercase;
       color: rgba(255,255,255,0.2);
     }
+    .video-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
     .render-video {
       display: block;
       width: 100%;
       max-height: 72vh;
       object-fit: cover;
+    }
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      z-index: 10;
+    }
+    .video-overlay-text {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      text-align: center;
+      max-width: 900px;
+    }
+    .video-overlay-description {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-size: clamp(20px, 3vw, 36px);
+      font-weight: 500;
+      line-height: 1.4;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+    .video-overlay-highlight {
+      font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+      font-size: clamp(32px, 6vw, 72px);
+      font-weight: 900;
+      line-height: 1.1;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
     }
 
     /* ─────────────────────────────────────
@@ -432,7 +472,7 @@
       display: flex;
       align-items: center;
       gap: 48px;
-      margin-top: -180px;
+      margin-top: -80px;
       position: relative;
       z-index: 2;
     }
@@ -658,9 +698,9 @@
       #darc { padding: 80px 24px 72px; }
       .darc-grid { grid-template-columns: 1fr; gap: 48px; }
       #render-video .video-header { padding: 20px 24px 16px; }
-      #markets { padding: 80px 24px 72px; }
+      #markets { padding: 80px 24px 72px; position: relative; z-index: 3; }
       .markets-grid { grid-template-columns: 1fr 1fr; }
-      #status-band { padding: 20px 24px; flex-wrap: wrap; gap: 24px; }
+      #status-band { padding: 20px 24px; flex-wrap: wrap; gap: 24px; margin-top: 0; }
       #supporters { padding: 72px 24px 64px; }
       .supporters-grid { grid-template-columns: 1fr 1fr; }
       .supporters-header { flex-direction: column; align-items: flex-start; gap: 16px; }
@@ -701,7 +741,7 @@
       <h1 class="display d-xxl">Nothing<br>bolted<br>on<img class="period-mark" src="BGSLogoNewMarkOnlyWhite.png" alt="."></h1>
       <p class="hero-sub">
         Structural performance. Electromagnetic properties.<br>
-        Manufacturing economics. One material.
+        Manufacturing that scales fast. One material.
       </p>
     </div>
 
@@ -726,19 +766,19 @@
         <div class="attr-grid">
           <div class="attr-cell">
             <div class="attr-val">Structural</div>
-            <div class="attr-label">On par with titanium</div>
+            <div class="attr-label">Quasi-isotropic, design freedom</div>
           </div>
           <div class="attr-cell">
             <div class="attr-val">Light</div>
-            <div class="attr-label">Below titanium density</div>
+            <div class="attr-label">Half aluminum density</div>
           </div>
           <div class="attr-cell">
             <div class="attr-val">EMI / ESD</div>
-            <div class="attr-label">Shielding and charge dissipation</div>
+            <div class="attr-label">Integrated. Fewer parts, less assembly labor.</div>
           </div>
           <div class="attr-cell">
-            <div class="attr-val">Scalable</div>
-            <div class="attr-label">Assembly velocity model</div>
+            <div class="attr-val">Compression-Molded</div>
+            <div class="attr-label">Net-shape from mold, minimal post-processing</div>
           </div>
         </div>
       </div>
@@ -758,8 +798,8 @@
           <p class="darc-block-body">
             Conventional composites force a trade: performance or cost.
             DARC collapses that trade. Engineered to be net-shape from
-            the mold, it eliminates the autoclave constraint and compresses
-            the manufacturing timeline in ways that change the unit economics
+            the mold, it exits ready to assemble and compresses the
+            manufacturing timeline in ways that change the unit economics
             of high-performance structure.
           </p>
         </div>
@@ -786,9 +826,17 @@
       </div>
       <span class="video-note">Concept Renders</span>
     </div>
-    <video class="render-video" autoplay muted playsinline>
-      <source src="drone-render.mp4" type="video/mp4">
-    </video>
+    <div class="video-container">
+      <video class="render-video" autoplay muted playsinline>
+        <source src="drone-render.mp4" type="video/mp4">
+      </video>
+      <div class="video-overlay">
+        <div class="video-overlay-text">
+          <div class="video-overlay-description">What takes multiple parts and assembly in traditional composites becomes one integrated structure. Compression molding delivers net-shape complexity in a single cycle.</div>
+          <div class="video-overlay-highlight">Fewer parts.<br>Lower labor.<br>Faster production.<br>Design freedom.</div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ══════════════════════════════════
@@ -805,7 +853,7 @@
       <div class="market-cell">
         <div class="market-num">01</div>
         <div class="market-name">Defense</div>
-        <div class="market-desc">Attritable and autonomous platforms. Structural enclosures. Airframes demanding material intelligence at scale.</div>
+        <div class="market-desc">Attritable platform architecture. Structural airframes for high-rate production and swarm-capable systems. Unit-cost economics built in.</div>
       </div>
       <div class="market-cell">
         <div class="market-num">02</div>
@@ -859,7 +907,6 @@
           <span class="ch-label-num">05</span>
           <span class="ch-label-text">Ecosystem &amp; Affiliates</span>
         </div>
-      <div class="supporters-hed">Ecosystem<br>&amp; Affiliates</div>
       <div class="supporters-note">
         BGS Engineering operates within a growing network of
         research institutions, government programs, and
@@ -905,10 +952,9 @@
           <span class="ch-label-num">06</span>
           <span class="ch-label-text">Contact</span>
         </div>
-        <div class="contact-hed">Welcoming<br>conversations.</div>
+        <div class="contact-hed">Technical<br>partnerships.</div>
         <p class="contact-sub">
-          If your application demands something the current market
-          can't deliver, we're interested in the problem. Reach out.
+          If your application demands structural performance + electromagnetic properties at scale, we're interested. Property set still expanding through active characterization. Ready to discuss pathways to production.
         </p>
       </div>
       <div class="contact-right reveal">
