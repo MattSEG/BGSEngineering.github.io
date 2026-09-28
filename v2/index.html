@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BGS Engineering · DARC Composite</title>
+<meta name="description" content="BGS Engineering builds with DARC, a discontinuous carbon fiber composite that molds structure and electromagnetic function into one part. Albuquerque, New Mexico.">
+<meta name="theme-color" content="#050505">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="is-loading">
+
+<!-- SVG defs: the BGS mark, traced 1:1 from the supplied line drawing -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="mark" viewBox="0 0 1250 1442">
+      <polygon points="0,360 625,2 1250,360 1250,722 625,362 0,722"/>
+      <polygon points="625,489 968,675 140,1160 0,1080 0,857"/>
+      <polygon points="241,1220 1071,735 1250,831 1250,1080 625,1440"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- Preloader -->
+<div class="loader" aria-hidden="true">
+  <svg class="loader__mark" viewBox="0 0 1250 1442">
+    <polygon points="0,360 625,2 1250,360 1250,722 625,362 0,722"/>
+    <polygon points="625,489 968,675 140,1160 0,1080 0,857"/>
+    <polygon points="241,1220 1071,735 1250,831 1250,1080 625,1440"/>
+  </svg>
+  <div class="loader__meta">
+    <span>BGS / DARC</span>
+    <span class="loader__count">000</span>
+  </div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span><span class="cursor__label"></span></div>
+
+<!-- Nav -->
+<header class="nav">
+  <a href="#top" class="nav__logo" aria-label="BGS Engineering home">
+    <img src="assets/logos/bgs-horizontal-white.png" alt="BGS Engineering">
+  </a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="#material" data-cursor="Read">Material</a>
+    <a href="#platform" data-cursor="Watch">Platform</a>
+    <a href="#applications" data-cursor="Explore">Applications</a>
+    <a href="#ecosystem" data-cursor="Meet">Ecosystem</a>
+    <a href="#contact" class="nav__cta" data-cursor="Talk">Contact</a>
+  </nav>
+  <button class="nav__burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+</header>
+<div class="menu" aria-hidden="true">
+  <a href="#material">Material</a>
+  <a href="#platform">Platform</a>
+  <a href="#applications">Applications</a>
+  <a href="#ecosystem">Ecosystem</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<!-- HUD -->
+<div class="hud" aria-hidden="true">
+  <div class="hud__left"><span class="hud__idx">00</span><span class="hud__sep"></span><span class="hud__name">Index</span></div>
+  <div class="hud__right"><span>35.0844° N · 106.6504° W</span><span class="hud__bar"><i></i></span></div>
+</div>
+
+<main id="top">
+
+  <!-- 00 · HERO: chopped fiber condenses into the mark -->
+  <section class="hero" data-hud="00" data-hud-name="Nothing bolted on">
+    <div class="hero__pin">
+      <canvas class="hero__gl" aria-hidden="true"></canvas>
+      <img class="hero__fallback" src="assets/logos/bgs-vertical-white.png" alt="">
+      <div class="hero__top">
+        <span class="tag"><i></i>Patent pending</span>
+        <span class="tag">Albuquerque, New Mexico</span>
+      </div>
+      <h1 class="hero__title">
+        <span class="line"><span>Nothing</span></span>
+        <span class="line"><span>bolted on.</span></span>
+      </h1>
+      <div class="hero__sub">
+        <p>Structure. Electromagnetic function. Manufacturing that scales. <strong>One material, molded as one part.</strong></p>
+      </div>
+      <div class="hero__caption">
+        <span class="mono">Fig. 00</span>
+        <span>Thousands of short carbon fibers. No weave, no layup, no fixed direction. Pressed into a single shape.</span>
+      </div>
+      <div class="hero__scroll"><span>Scroll</span><i></i></div>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto" data-hud="01" data-hud-name="The trade">
+    <p class="manifesto__eyebrow mono">01 / The trade</p>
+    <p class="manifesto__text" data-words>
+      Every composite makes you choose. Performance or cost. Strength or speed. Build the structure, then bolt on everything it can't do by itself: the shielding, the brackets, the fasteners, the coatings. <em>DARC collapses that trade.</em>
+    </p>
+  </section>
+
+  <!-- 02 · ORIGIN -->
+  <section class="origin" data-hud="02" data-hud-name="Origin">
+    <div class="origin__grid">
+      <div class="origin__copy">
+        <p class="mono eyebrow">02 / Origin</p>
+        <h2 class="h2 reveal-lines">It started<br>with a shift knob.</h2>
+        <p class="lede">Albuquerque is hard on parts. High desert, high altitude, relentless sun. DARC began there as an idea: carbon fiber car parts that could stand up to it, and that were easier to make.</p>
+        <p>The first real part was a shift knob, pressed in one shot from a single charge of material, with the threaded insert molded inside. No weld lines. No machining. No glue.</p>
+        <p>Then the material started showing more than we'd asked of it. It was strong for its weight. It conducted. It kept its strength in every direction. We took the idea and our early research to New Mexico's national laboratories, and developed DARC with them. A car part turned into a platform.</p>
+        <div class="proof">
+          <span class="proof__tag"><i></i>Demonstrated part</span>
+          <span class="proof__text">Molded DARC shift knob with integral threaded insert</span>
+        </div>
+      </div>
+      <div class="origin__media">
+        <figure class="frame frame--tall parallax" data-speed="-0.12">
+          <img src="assets/img/knob-desk.webp" alt="Molded DARC shift knob standing on a desk" loading="lazy">
+          <figcaption class="mono">Fig. 02a · First part</figcaption>
+        </figure>
+        <figure class="frame frame--small parallax" data-speed="0.18">
+          <img src="assets/img/knob-car.webp" alt="DARC shift knob installed in a car" loading="lazy">
+          <figcaption class="mono">Fig. 02b · In service</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · MATERIAL -->
+  <section class="material" id="material" data-hud="03" data-hud-name="Material">
+    <div class="material__head">
+      <p class="mono eyebrow">03 / The material</p>
+      <h2 class="display reveal-lines">D·A·R·C</h2>
+      <p class="material__expand mono">Discontinuous Advanced Resin Composite</p>
+    </div>
+
+    <div class="loupe-wrap" data-cursor="Inspect">
+      <img class="loupe-wrap__img" src="assets/img/panel-a.webp" alt="Early development sample of a molded DARC panel, showing randomly oriented carbon fiber chips">
+      <div class="loupe" aria-hidden="true"></div>
+      <span class="sample-tag"><i></i>Early development sample</span>
+      <div class="loupe-wrap__label mono"><span>Fig. 03 · Early sample panel. Surface finish not representative of current parts.</span><span class="loupe-hint">Move to inspect</span></div>
+    </div>
+
+    <div class="material__body">
+      <p class="lede reveal-up">A quasi-isotropic matrix built from short, discontinuous carbon fiber. It is engineered to process at scale, without the autoclave that defines conventional composites.</p>
+      <p class="reveal-up">Woven carbon is strong in the directions you lay it up and weak in the others. DARC has no weave. The fibers land in every orientation, so the part carries load in every direction, and you can mold it into shapes a laminate can't follow.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat__num"><b data-count="1.37" data-dec="2">0</b></span>
+        <span class="stat__unit mono">g/cm³</span>
+        <span class="stat__label">Density. About half that of aluminum.</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num">&gt;<b data-count="2" data-dec="0">0</b>×</span>
+        <span class="stat__unit mono">vs. aluminum</span>
+        <span class="stat__label">Specific strength in early tests. Approaching titanium on a strength-to-weight basis.</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num"><b data-count="1" data-dec="0">0</b></span>
+        <span class="stat__unit mono">press cycle</span>
+        <span class="stat__label">Net shape from the mold. Inserts go in during molding.</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num"><b data-count="0" data-dec="0">0</b></span>
+        <span class="stat__unit mono">autoclaves</span>
+        <span class="stat__label">No layup, no vacuum bagging, no autoclave queue.</span>
+      </div>
+    </div>
+
+    <ul class="props">
+      <li><span class="mono">A</span>Quasi-isotropic. Strength in every direction, freedom in every shape.</li>
+      <li><span class="mono">B</span>Conductive by design. EMI shielding and ESD capability are built into the matrix, not applied afterward.</li>
+      <li><span class="mono">C</span>RF and EM behavior independently characterized by a third-party test lab.</li>
+    </ul>
+  </section>
+
+  <!-- 04 · PROCESS -->
+  <section class="process" data-hud="04" data-hud-name="Process">
+    <div class="process__pin">
+      <div class="process__head">
+        <p class="mono eyebrow">04 / Process</p>
+        <h2 class="h2">Charge to part.<br><span class="dim">Four moves.</span></h2>
+      </div>
+      <div class="process__track">
+        <div class="process__line"><i></i></div>
+        <ol class="process__steps">
+          <li><span class="process__n mono">01</span><h3>Charge</h3><p>A measured charge of DARC goes into a matched metal tool.</p></li>
+          <li><span class="process__n mono">02</span><h3>Press</h3><p>The tool closes. Fiber and resin flow together to fill the tool.</p></li>
+          <li><span class="process__n mono">03</span><h3>Cure</h3><p>The closed tool moves to the oven to cure, with inserts already in place. The press is free for the next part.</p></li>
+          <li><span class="process__n mono">04</span><h3>Demold</h3><p>Net shape out of the mold. Minimal trimming. Ready for integration.</p></li>
+        </ol>
+      </div>
+      <p class="process__kicker">No layup. No autoclave. Presses keep pressing while ovens cure, so output scales with tools, not presses.</p>
+    </div>
+  </section>
+
+  <!-- 05 · PLATFORM: U1 scroll-scrubbed -->
+  <section class="platform" id="platform" data-hud="05" data-hud-name="Platform">
+    <div class="platform__pin">
+      <canvas class="platform__canvas" aria-label="Rendered DARC U1 airframe concept rotating from a top view to a front view"></canvas>
+      <div class="platform__shade"></div>
+      <div class="platform__label">
+        <span class="mono">05 / Platform</span>
+        <span class="concept-badge">Concept render · Not flight hardware</span>
+      </div>
+      <div class="platform__title">
+        <h2 class="display display--dark">U1<span class="display__concept">Concept</span></h2>
+        <p class="mono">DARC airframe concept · Rendered design, not a built product</p>
+      </div>
+      <div class="callout" data-at="0.18"><span class="mono">A</span><p><strong>Two molded halves.</strong> A clamshell airframe: two structures joined with four fasteners. A popular comparable airframe uses 13 panels and 32 fasteners.</p></div>
+      <div class="callout" data-at="0.42"><span class="mono">B</span><p><strong>Shaped for flow, not for a laminate.</strong> Organic curves that woven carbon can't follow.</p></div>
+      <div class="callout" data-at="0.66"><span class="mono">C</span><p><strong>Designed around off-the-shelf hardware.</strong> Motors, props and electronics drop in.</p></div>
+      <div class="callout" data-at="0.86"><span class="mono">D</span><p><strong>Built to be expendable.</strong> Airframe economics for attritable fleets.</p></div>
+      <div class="platform__progress mono"><span class="pp-num">000</span>/192</div>
+    </div>
+  </section>
+
+  <!-- STUDIO gallery -->
+  <section class="studio" data-hud="05" data-hud-name="Platform">
+    <div class="studio__head">
+      <p class="mono eyebrow">U1 · Studio views</p>
+      <p class="studio__note"><strong>Concept renders.</strong> A design direction for what DARC makes possible, not flight hardware.</p>
+    </div>
+    <div class="studio__grid">
+      <figure class="studio__a" data-cursor="View"><img src="assets/img/u1-iso.webp" alt="U1 concept, three-quarter view" loading="lazy"><figcaption class="mono">Concept render · Iso</figcaption></figure>
+      <figure class="studio__b" data-cursor="View"><img src="assets/img/u1-top.webp" alt="U1 concept, top view" loading="lazy"><figcaption class="mono">Concept render · Plan</figcaption></figure>
+      <figure class="studio__c" data-cursor="View"><img src="assets/img/u1-front.webp" alt="U1 concept, front view" loading="lazy"><figcaption class="mono">Concept render · Front</figcaption></figure>
+      <figure class="studio__d" data-cursor="View"><img src="assets/img/u1-side.webp" alt="U1 concept, side view" loading="lazy"><figcaption class="mono">Concept render · Profile</figcaption></figure>
+      <figure class="studio__e" data-cursor="View"><img src="assets/img/u1-detail.webp" alt="U1 concept, motor pod detail" loading="lazy"><figcaption class="mono">Concept render · Pod detail</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- 06 · WHY IT MATTERS -->
+  <section class="why" data-hud="06" data-hud-name="Why it matters">
+    <p class="mono eyebrow">06 / Why it matters</p>
+    <h2 class="h2 reveal-lines">Six reasons one part<br>beats an assembly.</h2>
+    <ol class="why__list">
+      <li><span class="mono">01</span><h3>Strong</h3><p>More than twice the specific strength of aluminum in early tests.</p></li>
+      <li><span class="mono">02</span><h3>Light</h3><p>1.37 g/cm³. Roughly half the density of aluminum.</p></li>
+      <li><span class="mono">03</span><h3>Moldable</h3><p>Complex geometry, near net shape, inserts molded in, one press cycle.</p></li>
+      <li><span class="mono">04</span><h3>Collapses the BOM</h3><p>One molded part replaces brackets, fasteners, sub-assemblies and add-on shielding.</p></li>
+      <li><span class="mono">05</span><h3>Collapses labor</h3><p>No layup, no autoclave, no post-machining, no assembly steps.</p></li>
+      <li><span class="mono">06</span><h3>Made in the USA</h3><p>Developed and built in Albuquerque, New Mexico, on a domestic supply chain.</p></li>
+    </ol>
+  </section>
+
+  <!-- 07 · APPLICATIONS: horizontal -->
+  <section class="apps" id="applications" data-hud="07" data-hud-name="Applications">
+    <div class="apps__pin">
+      <div class="apps__head">
+        <p class="mono eyebrow">07 / Applications</p>
+        <h2 class="h2">Where one material<br><span class="dim">changes the math.</span></h2>
+      </div>
+      <div class="apps__track">
+        <article class="app">
+          <div class="app__media"><img src="assets/img/u1-hero.webp" alt="" loading="lazy"></div>
+          <span class="app__flag mono">Image: concept render</span><div class="app__body"><span class="mono">A · Defense</span><h3>Attritable by design</h3><p>Structural airframes and swarm-capable systems, where the airframe has to be cheap enough to lose and good enough to fly.</p></div>
+        </article>
+        <article class="app">
+          <div class="app__media"><img src="assets/img/panel-b.webp" alt="" loading="lazy"></div>
+          <span class="app__flag mono">Image: early sample</span><div class="app__body"><span class="mono">B · Space</span><h3>Every gram counts</h3><p>Lightweight structure built for demanding environments, with electromagnetic function in the part itself.</p></div>
+        </article>
+        <article class="app">
+          <div class="app__media"><img src="assets/img/knob-car.webp" alt="" loading="lazy"></div>
+          <div class="app__body"><span class="mono">C · Automotive</span><h3>Where it started</h3><p>Performance and motorsport components with carbon character and one-shot manufacturing.</p></div>
+        </article>
+        <article class="app">
+          <div class="app__media"><img src="assets/img/panel-a.webp" alt="" loading="lazy"></div>
+          <span class="app__flag mono">Image: early sample</span><div class="app__body"><span class="mono">D · Industrial</span><h3>High-value parts</h3><p>Enclosures, housings and components that need strength, conductivity and durability without a bill of materials to match.</p></div>
+        </article>
+        <article class="app app--end">
+          <div class="app__body"><span class="mono">E · Yours</span><h3>Bring us the design that could benefit.</h3><a href="#contact" class="btn" data-cursor="Talk">Start a conversation <i>→</i></a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · FOUNDERS -->
+  <section class="team" data-hud="08" data-hud-name="Founders">
+    <p class="mono eyebrow">08 / Founders</p>
+    <h2 class="h2 reveal-lines">Three builders.<br><span class="dim">One material.</span></h2>
+    <div class="team__grid">
+      <article class="person">
+        <div class="person__mono"><svg><use href="#mark"/></svg><span>MG</span></div>
+        <h3>Matt Gassner</h3>
+        <p class="mono">Co-Founder · Strategy &amp; Analysis</p>
+        <p>Built the partnerships with national laboratories and government entities that took DARC from an idea into development. Leads strategy, data and commercialization. Background in finance and markets.</p>
+      </article>
+      <article class="person">
+        <div class="person__mono"><svg><use href="#mark"/></svg><span>JS</span></div>
+        <h3>Jerry Stratton</h3>
+        <p class="mono">Co-Founder · Manufacturing &amp; Mold Design</p>
+        <p>Machinist and mold maker who leads tooling design and fabrication. NAVSEA Level 1 certified. Has made parts for NASA's Mars Cube One program.</p>
+      </article>
+      <article class="person">
+        <div class="person__mono"><svg><use href="#mark"/></svg><span>DB</span></div>
+        <h3>Dan Brockett</h3>
+        <p class="mono">Co-Founder · Logistics &amp; Operations</p>
+        <p>Logistics expert who manages North American distribution for an auto parts brand. Leads operations, supply chain and the automotive channel.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 09 · ECOSYSTEM -->
+  <section class="eco" id="ecosystem" data-hud="09" data-hud-name="Ecosystem">
+    <div class="eco__head">
+      <p class="mono eyebrow">09 / Ecosystem</p>
+      <h2 class="h2 reveal-lines">Built in New Mexico.<br><span class="dim">Backed by it too.</span></h2>
+    </div>
+    <ul class="creds">
+      <li><span class="mono">Grant</span>NM Science &amp; Technology Business Startup Grant recipient</li>
+      <li><span class="mono">Verified</span>RF &amp; EM characterization, independently verified</li>
+      <li><span class="mono">R&amp;D</span>Active research collaborations with New Mexico research institutions</li>
+    </ul>
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__row">
+        <img src="assets/logos/tio.png" alt=""><img src="assets/logos/nmsba.png" alt=""><img src="assets/logos/nmstartup.png" alt=""><img src="assets/logos/arrowhead.png" alt=""><img src="assets/logos/nmt.png" alt=""><img src="assets/logos/qstation.png" alt="">
+        <img src="assets/logos/tio.png" alt=""><img src="assets/logos/nmsba.png" alt=""><img src="assets/logos/nmstartup.png" alt=""><img src="assets/logos/arrowhead.png" alt=""><img src="assets/logos/nmt.png" alt=""><img src="assets/logos/qstation.png" alt="">
+      </div>
+    </div>
+    <ul class="partners">
+      <li><a href="https://edd.newmexico.gov/divisions-and-offices/tio/" target="_blank" rel="noopener" data-cursor="Visit"><img src="assets/logos/tio.png" alt=""><span>NM Technology &amp; Innovation Office</span><i>↗</i></a></li>
+      <li><a href="https://www.nmsbaprogram.org/" target="_blank" rel="noopener" data-cursor="Visit"><img src="assets/logos/nmsba.png" alt=""><span>New Mexico Small Business Assistance</span><i>↗</i></a></li>
+      <li><a href="https://www.nmstartupalliance.org/" target="_blank" rel="noopener" data-cursor="Visit"><img src="assets/logos/nmstartup.png" alt=""><span>NM Startup Alliance</span><i>↗</i></a></li>
+      <li><a href="https://arrowheadcenter.nmsu.edu/" target="_blank" rel="noopener" data-cursor="Visit"><img src="assets/logos/arrowhead.png" alt=""><span>Arrowhead Center</span><i>↗</i></a></li>
+      <li><a href="https://www.nmt.edu/" target="_blank" rel="noopener" data-cursor="Visit"><img src="assets/logos/nmt.png" alt=""><span>New Mexico Tech</span><i>↗</i></a></li>
+      <li><a href="https://www.qstation.tech/" target="_blank" rel="noopener" data-cursor="Visit"><img src="assets/logos/qstation.png" alt=""><span>Q Station</span><i>↗</i></a></li>
+    </ul>
+  </section>
+
+  <!-- 10 · CONTACT -->
+  <section class="contact" id="contact" data-hud="10" data-hud-name="Contact">
+    <svg class="contact__mark" aria-hidden="true"><use href="#mark"/></svg>
+    <p class="mono eyebrow">10 / Technical partnerships</p>
+    <h2 class="contact__title">
+      <span class="line"><span>Build it</span></span>
+      <span class="line"><span>in one piece.</span></span>
+    </h2>
+    <p class="contact__lede">If your application needs structural performance and electromagnetic function at scale, we want to hear about it.</p>
+    <a class="btn btn--big magnetic" href="mailto:info@bgsengineering.com" data-cursor="Email"><span>info@bgsengineering.com</span><i>→</i></a>
+    <div class="contact__meta">
+      <div><span class="mono">Manufacturing facility</span><p>8524 Indian School Rd NE<br>Albuquerque, NM 87112</p></div>
+      <div><span class="mono">Status</span><p>Patent pending</p></div>
+      <div><span class="mono">Material</span><p>DARC · Discontinuous Advanced Resin Composite</p></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <img src="assets/logos/bgs-horizontal-white.png" alt="BGS Engineering">
+  <span class="mono">© 2024-2026 BGS Engineering, LLC · All rights reserved · Patent pending</span>
+  <a href="#top" class="mono" data-cursor="Up">Back to top ↑</a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
