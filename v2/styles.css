@@ -97,7 +97,7 @@ em{font-style:normal;color:#fff}
 @media (max-width:640px){.hud__right span:first-child{display:none}}
 
 /* HERO */
-.hero{height:280vh;position:relative}
+.hero{height:340vh;position:relative}
 .hero__pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 .hero__gl{position:absolute;inset:0;width:100%;height:100%}
 .hero__fallback{display:none;position:absolute;left:50%;top:46%;width:min(40vw,300px);transform:translate(-50%,-50%);opacity:.9}

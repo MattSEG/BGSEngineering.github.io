@@ -125,8 +125,8 @@
     loader.style.clipPath = "inset(0 0 0% 0)";
   });
 
-  /* ---------------- Hero: chopped fiber field ---------------- */
-  const hero = { prog: 0, ok: false };
+  /* ---------------- Hero: chopped carbon tow condenses into the mark ---------------- */
+  const hero = { prog: 0, white: 0, ok: false };
   (function initFibers() {
     const canvas = $(".hero__gl");
     if (typeof window.THREE === "undefined") { document.documentElement.classList.add("no-webgl"); return; }
@@ -136,145 +136,206 @@
     hero.ok = true;
     renderer.setClearColor(0x050505, 1);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-    camera.position.set(0, 0, 9);
+    camera.position.set(0, 0, 9.5);
 
-    // The BGS mark, in its native coordinates (viewBox 0 0 1250 1442)
-    const POLYS = [
-      [[0,360],[625,2],[1250,360],[1250,722],[625,362],[0,722]],
-      [[625,489],[968,675],[140,1160],[0,1080],[0,857]],
-      [[241,1220],[1071,735],[1250,831],[1250,1080],[625,1440]]
-    ];
-    const inPoly = (x, y, poly) => {
-      let inside = false;
-      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-        const [xi, yi] = poly[i], [xj, yj] = poly[j];
-        if (((yi > y) !== (yj > y)) && (x < ((xj - xi) * (y - yi)) / (yj - yi) + xi)) inside = !inside;
-      }
-      return inside;
-    };
-    const S = 3.1 / 1442;
-    const N = MOBILE() ? 7000 : 16000;
-    const V = N * 2;
-    const aStart = new Float32Array(V * 3), aTarget = new Float32Array(V * 3);
-    const aDirS = new Float32Array(V * 3), aDirT = new Float32Array(V * 3);
-    const aEnd = new Float32Array(V), aRand = new Float32Array(V), aLen = new Float32Array(V);
-    const pos = new Float32Array(V * 3);
-
-    for (let f = 0; f < N; f++) {
-      let x, y, k = 0;
-      do { x = Math.random() * 1250; y = Math.random() * 1442; k++; }
-      while (!POLYS.some((p) => inPoly(x, y, p)) && k < 60);
-      const tx = (x - 625) * S, ty = -(y - 721) * S, tz = (Math.random() - 0.5) * 0.08;
-
-      // start: a loose, flattened vortex of chopped fiber
-      const r = 1.6 + Math.pow(Math.random(), 0.7) * 5.2;
-      const th = Math.random() * Math.PI * 2;
-      const sx = Math.cos(th) * r, sz = Math.sin(th) * r * 0.7 - 1.0, sy = (Math.random() - 0.5) * 3.6 * (0.5 + r / 7);
-
-      const u = Math.random() * 2 - 1, ph = Math.random() * Math.PI * 2, q = Math.sqrt(1 - u * u);
-      const ds = [q * Math.cos(ph), q * Math.sin(ph), u];
-      const a = Math.random() * Math.PI; // quasi-isotropic: any in-plane angle
-      const dt = [Math.cos(a), Math.sin(a), (Math.random() - 0.5) * 0.25];
-      const rnd = Math.random();
-      const len = 0.025 + Math.random() * 0.06;
-
-      for (let e = 0; e < 2; e++) {
-        const v = f * 2 + e, o = v * 3;
-        aStart[o] = sx; aStart[o + 1] = sy; aStart[o + 2] = sz;
-        aTarget[o] = tx; aTarget[o + 1] = ty; aTarget[o + 2] = tz;
-        aDirS[o] = ds[0]; aDirS[o + 1] = ds[1]; aDirS[o + 2] = ds[2];
-        aDirT[o] = dt[0]; aDirT[o + 1] = dt[1]; aDirT[o + 2] = dt[2];
-        aEnd[v] = e === 0 ? -0.5 : 0.5;
-        aRand[v] = rnd; aLen[v] = len;
-      }
+  // BGS mark, native coordinates (viewBox 0 0 1250 1442)
+  const POLYS = [
+    [[0,360],[625,2],[1250,360],[1250,722],[625,362],[0,722]],
+    [[625,489],[968,675],[140,1160],[0,1080],[0,857]],
+    [[241,1220],[1071,735],[1250,831],[1250,1080],[625,1440]]
+  ];
+  const inPoly = (x, y, poly) => {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, yi] = poly[i], [xj, yj] = poly[j];
+      if (((yi > y) !== (yj > y)) && (x < ((xj - xi) * (y - yi)) / (yj - yi) + xi)) inside = !inside;
     }
+    return inside;
+  };
+  const corners = (cx, cy, a, L, W) => {
+    const ux = Math.cos(a), uy = Math.sin(a), vx = -uy, vy = ux, l = L / 2, w = W / 2;
+    return [[cx+ux*l+vx*w, cy+uy*l+vy*w],[cx+ux*l-vx*w, cy+uy*l-vy*w],[cx-ux*l+vx*w, cy-uy*l+vy*w],[cx-ux*l-vx*w, cy-uy*l-vy*w],[cx+ux*l, cy+uy*l],[cx-ux*l, cy-uy*l]];
+  };
+  const fits = (poly, cs) => cs.every(([x, y]) => inPoly(x, y, poly));
+  const nearestEdge = (poly, x, y) => {
+    let best = null;
+    for (let i = 0; i < poly.length; i++) {
+      const [ax, ay] = poly[i], [bx, by] = poly[(i + 1) % poly.length];
+      const dx = bx - ax, dy = by - ay, len2 = dx*dx + dy*dy;
+      const t = Math.max(0, Math.min(1, ((x-ax)*dx + (y-ay)*dy) / len2));
+      const px = ax + dx*t, py = ay + dy*t, d = Math.hypot(x-px, y-py);
+      if (!best || d < best.d) best = { d, ang: Math.atan2(dy, dx), nx: (x-px)/(d||1), ny: (y-py)/(d||1) };
+    }
+    return best;
+  };
 
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute("aStart", new THREE.BufferAttribute(aStart, 3));
-    geo.setAttribute("aTarget", new THREE.BufferAttribute(aTarget, 3));
-    geo.setAttribute("aDirS", new THREE.BufferAttribute(aDirS, 3));
-    geo.setAttribute("aDirT", new THREE.BufferAttribute(aDirT, 3));
-    geo.setAttribute("aEnd", new THREE.BufferAttribute(aEnd, 1));
-    geo.setAttribute("aRand", new THREE.BufferAttribute(aRand, 1));
-    geo.setAttribute("aLen", new THREE.BufferAttribute(aLen, 1));
-    geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 20);
+  // Chip recipe (mark px units; the mark is 1250 px wide). 3/8 in tow reads as ~60 px chips here.
+  const BASE_L = 62;
+  const makeChip = () => {
+    const r = Math.random();
+    if (r < 0.55) return { L: BASE_L * (0.85 + Math.random()*0.35), W: 14 + Math.random()*22, kind: 0 };   // bundle
+    if (r < 0.86) return { L: BASE_L * (0.8 + Math.random()*0.4),  W: 4 + Math.random()*7,  kind: 1 };    // split strip
+    return { L: BASE_L * (0.9 + Math.random()*0.8), W: 1.2 + Math.random()*1.3, kind: 2 };                // single filament
+  };
 
-    const uniforms = {
-      uTime: { value: 0 }, uProg: { value: RM ? 1 : 0 }, uAlpha: { value: 0 },
-      uLight: { value: new THREE.Vector3(0.6, 0.5, 0.4) }
-    };
-    const mat = new THREE.ShaderMaterial({
-      uniforms, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-      vertexShader: `
-        attribute vec3 aStart; attribute vec3 aTarget; attribute vec3 aDirS; attribute vec3 aDirT;
-        attribute float aEnd; attribute float aRand; attribute float aLen;
-        uniform float uTime; uniform float uProg; uniform vec3 uLight;
-        varying float vA;
-        float ease(float t){ return t < .5 ? 4.*t*t*t : 1. - pow(-2.*t + 2., 3.) / 2.; }
-        void main(){
-          float ang = uTime * (0.04 + 0.10 * aRand);
-          float c = cos(ang), s = sin(ang);
-          vec3 st = vec3(c*aStart.x - s*aStart.z, aStart.y + sin(uTime*.5 + aRand*6.2831)*.12, s*aStart.x + c*aStart.z);
-          float t = ease(clamp((uProg - aRand*0.38) / 0.62, 0., 1.));
-          vec3 ctr = mix(st, aTarget, t);
-          vec3 swirl = normalize(vec3(-st.z, 0.2, st.x) + 1e-4);
-          ctr += swirl * sin(t * 3.14159) * (0.4 + 0.9*aRand);
-          vec3 d = normalize(mix(aDirS, aDirT, t) + 1e-4);
-          float spin = uTime * (1.0 - t) * (0.6 + aRand);
-          d = normalize(vec3(d.x*cos(spin) - d.y*sin(spin), d.x*sin(spin) + d.y*cos(spin), d.z));
-          vec3 p = ctr + d * aLen * aEnd * (1.0 + (1.0 - t) * 0.6);
-          float g = pow(abs(dot(d, normalize(uLight))), 5.0);
-          vA = (0.14 + 0.86*g) * mix(0.45, 1.0, t);
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
-        }`,
-      fragmentShader: `
-        uniform float uAlpha; varying float vA;
-        void main(){ gl_FragColor = vec4(vec3(0.94), vA * uAlpha); }`
-    });
-    const lines = new THREE.LineSegments(geo, mat);
-    const group = new THREE.Group();
-    group.add(lines);
-    scene.add(group);
+  const chips = [];
+  const N_FILL = MOBILE() ? 2600 : 5200;
+  // 2) random fill, quasi-isotropic; chips that would cross an edge align to it instead
+  let guard = 0;
+  while (chips.length < N_FILL && guard++ < N_FILL * 20) {
+    const x = Math.random()*1250, y = Math.random()*1442;
+    const poly = POLYS.find(p => inPoly(x, y, p));
+    if (!poly) continue;
+    const c = makeChip();
+    let a = Math.random() * Math.PI, cx = x, cy = y;
+    if (!fits(poly, corners(cx, cy, a, c.L, c.W))) {
+      const e = nearestEdge(poly, cx, cy);
+      const need = c.W/2 + 1;
+      if (e.d < need) { cx += e.nx*(need - e.d); cy += e.ny*(need - e.d); }
+      let ok = false;
+      for (let s = 0; s < 6 && !ok; s++) {
+        a = e.ang + (Math.random()-0.5) * 0.9;
+        ok = fits(poly, corners(cx, cy, a, c.L, c.W));
+        if (!ok) c.L *= 0.8;
+      }
+      if (!ok) continue;
+    }
+    chips.push({ ...c, x: cx, y: cy, a, z: Math.random() });
+  }
 
-    const resize = () => {
-      const w = canvas.clientWidth, h = canvas.clientHeight;
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      const fit = w / h < 0.8 ? 0.62 : 1;
-      group.scale.setScalar(fit);
-      group.userData.fit = fit;
+  // ---------- GPU buffers ----------
+  const S = 3.1 / 1442;
+  const n = chips.length;
+  const base = new THREE.PlaneGeometry(1, 1);
+  const geo = new THREE.InstancedBufferGeometry();
+  geo.index = base.index;
+  geo.setAttribute("position", base.getAttribute("position"));
+  geo.setAttribute("uv", base.getAttribute("uv"));
+  geo.instanceCount = n;
+  const A = (k) => new Float32Array(n * k);
+  const aStart = A(3), aTarget = A(3), aUs = A(3), aNs = A(3), aUt = A(3), aSize = A(2), aRnd = A(4);
+  const randUnit = () => { const u = Math.random()*2-1, p = Math.random()*Math.PI*2, q = Math.sqrt(1-u*u); return [q*Math.cos(p), q*Math.sin(p), u]; };
+  chips.forEach((c, i) => {
+    const r = 1.6 + Math.pow(Math.random(), 0.7) * 5.2, th = Math.random()*Math.PI*2;
+    aStart.set([Math.cos(th)*r, (Math.random()-0.5)*3.6*(0.5 + r/7), Math.sin(th)*r*0.7 - 1.0], i*3);
+    const layer = c.kind === 2 ? 0.012 : c.z * 0.008;
+    aTarget.set([(c.x - 625)*S, -(c.y - 721)*S, layer], i*3);
+    const u = randUnit(); let nn = randUnit();
+    const d = u[0]*nn[0] + u[1]*nn[1] + u[2]*nn[2];
+    nn = [nn[0]-d*u[0], nn[1]-d*u[1], nn[2]-d*u[2]];
+    aUs.set(u, i*3); aNs.set(nn, i*3);
+    aUt.set([Math.cos(c.a), -Math.sin(c.a), (Math.random()-0.5)*0.05], i*3);
+    aSize.set([c.L*S, c.W*S], i*2);
+    const strands = c.kind === 2 ? 1 : Math.max(3, Math.round(c.W * 1.6));
+    aRnd.set([Math.random(), Math.random(), strands, Math.random()], i*4);
+  });
+  const IA = (arr, k) => new THREE.InstancedBufferAttribute(arr, k);
+  geo.setAttribute("aStart", IA(aStart, 3)); geo.setAttribute("aTarget", IA(aTarget, 3));
+  geo.setAttribute("aUs", IA(aUs, 3)); geo.setAttribute("aNs", IA(aNs, 3)); geo.setAttribute("aUt", IA(aUt, 3));
+  geo.setAttribute("aSize", IA(aSize, 2)); geo.setAttribute("aRnd", IA(aRnd, 4));
+
+  const uniforms = {
+    uTime: { value: 0 }, uProg: { value: RM ? 1 : 0 }, uFade: { value: 0 }, uWhite: { value: 0 }, uTurns: { value: 2 },
+    uL1: { value: new THREE.Vector3(0.6, 0.5, 0.8) }, uL2: { value: new THREE.Vector3(-0.7, -0.3, 0.6) }
+  };
+  const mat = new THREE.ShaderMaterial({
+    uniforms, side: THREE.DoubleSide,
+    vertexShader: `
+      attribute vec3 aStart; attribute vec3 aTarget; attribute vec3 aUs; attribute vec3 aNs; attribute vec3 aUt;
+      attribute vec2 aSize; attribute vec4 aRnd;
+      uniform float uTime; uniform float uProg; uniform float uTurns;
+      varying vec2 vUv; varying vec3 vT; varying vec3 vW; varying vec4 vRnd; varying float vK; varying float vP;
+      vec3 rot(vec3 v, vec3 k, float a){ return v*cos(a) + cross(k,v)*sin(a) + k*dot(k,v)*(1.0-cos(a)); }
+      float ease(float t){ return t < .5 ? 4.*t*t*t : 1. - pow(-2.*t + 2., 3.) / 2.; }
+      void main(){
+        float ang = uTime * (0.04 + 0.10*aRnd.w);
+        float c = cos(ang), s = sin(ang);
+        vec3 st = vec3(c*aStart.x - s*aStart.z, aStart.y + sin(uTime*.5 + aRnd.w*6.2831)*.12, s*aStart.x + c*aStart.z);
+        float t = ease(clamp((uProg - aRnd.x*0.38) / 0.62, 0., 1.));
+        float W = pow(1.0 - smoothstep(0.2, 0.95, uProg), 1.6) * (1.5708 + 6.2832 * uTurns);
+        float cw = cos(W), sw = sin(W);
+        vec3 tgt = vec3(cw*aTarget.x + sw*aTarget.z, aTarget.y, -sw*aTarget.x + cw*aTarget.z);
+        vec3 ut = vec3(cw*aUt.x + sw*aUt.z, aUt.y, -sw*aUt.x + cw*aUt.z);
+        vec3 nt = vec3(sw, 0.0, cw);
+        vec3 ctr = mix(st, tgt, t);
+        ctr += normalize(vec3(-st.z, 0.2, st.x) + 1e-4) * sin(t*3.14159) * (0.4 + 0.9*aRnd.w);
+        vec3 u = normalize(mix(aUs, ut, t) + 1e-4);
+        vec3 n = normalize(mix(aNs, nt, t) + 1e-4);
+        float spin = uTime * (1.0 - t) * (0.6 + aRnd.w);
+        vec3 ax = normalize(vec3(aRnd.w-.5, aRnd.y-.5, 1.2));
+        u = rot(u, ax, spin); n = rot(n, ax, spin);
+        n = normalize(n - dot(n,u)*u);
+        vec3 v = cross(n, u);
+        vec3 p = ctr + u*position.x*aSize.x + v*position.y*aSize.y;
+        vec4 wp = modelMatrix * vec4(p, 1.0);
+        vW = wp.xyz; vT = normalize(mat3(modelMatrix) * u);
+        vUv = uv; vRnd = aRnd; vK = aSize.y; vP = t;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }`,
+    fragmentShader: `
+      uniform vec3 uL1; uniform float uFade; uniform float uWhite;
+      varying vec2 vUv; varying vec3 vT; varying vec3 vW; varying vec4 vRnd; varying float vK; varying float vP;
+      float h(float x){ return fract(sin(x*127.1 + 311.7) * 43758.5453); }
+      void main(){
+        float strands = vRnd.z;
+        float id = floor(vUv.y * strands);
+        float sid = id + vRnd.w * 1000.0;
+        float e0 = h(sid) * 0.07, e1 = h(sid + 7.0) * 0.07;
+        if (strands > 2. && (vUv.x < e0 || vUv.x > 1.0 - e1)) discard;
+        if (strands > 4. && h(sid + 3.0) < 0.05) discard;
+        float streak = 0.72 + 0.28 * h(sid + 11.0);
+        float g = pow(abs(dot(normalize(vT), normalize(uL1))), 5.0);
+        float lum = (0.2 + 0.8 * g) * mix(0.45, 1.0, vP) * mix(0.6, 1.0, vRnd.y) * streak;
+        lum = mix(lum, 0.95, smoothstep(0.0, 0.8, uWhite));
+        gl_FragColor = vec4(vec3(lum) * uFade, 1.0);
+      }`
+  });
+  const group = new THREE.Group();
+  group.add(new THREE.Mesh(geo, mat));
+  group.children[0].frustumCulled = false;
+  scene.add(group);
+  const logoMat = new THREE.MeshBasicMaterial({ color: 0xf2f2f2, transparent: true, opacity: 0, depthTest: false, depthWrite: false });
+  POLYS.forEach((poly) => {
+    const shape = new THREE.Shape(poly.map(([x, y]) => new THREE.Vector2((x - 625) * S, -(y - 721) * S)));
+    const m = new THREE.Mesh(new THREE.ShapeGeometry(shape), logoMat);
+    m.position.z = 0.03; m.renderOrder = 10;
+    group.add(m);
+  });
+
+  const resize = () => {
+      const w = canvas.clientWidth, hh = canvas.clientHeight;
+      renderer.setSize(w, hh, false);
+      camera.aspect = w / hh; camera.updateProjectionMatrix();
+      group.scale.setScalar(w / hh < 0.8 ? 0.62 : 1);
     };
     resize();
     window.addEventListener("resize", resize);
 
     const mouse = { x: 0, y: 0, sx: 0, sy: 0 };
-    window.addEventListener("pointermove", (e) => {
-      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = (e.clientY / window.innerHeight) * 2 - 1;
-    });
+    window.addEventListener("pointermove", (e) => { mouse.x = e.clientX / innerWidth * 2 - 1; mouse.y = e.clientY / innerHeight * 2 - 1; });
 
     let visible = true;
     new IntersectionObserver(([en]) => { visible = en.isIntersecting; }).observe(canvas);
 
     const clock = new THREE.Clock();
+    let white = 0;
     const render = () => {
       requestAnimationFrame(render);
       if (!visible) return;
       const t = clock.getElapsedTime();
-      mouse.sx += (mouse.x - mouse.sx) * 0.05;
-      mouse.sy += (mouse.y - mouse.sy) * 0.05;
+      mouse.sx += (mouse.x - mouse.sx) * 0.05; mouse.sy += (mouse.y - mouse.sy) * 0.05;
+      const p = RM ? 1 : hero.prog;
+      white += ((RM ? 0 : hero.white) - white) * 0.1;
       uniforms.uTime.value = RM ? 0 : t;
-      uniforms.uProg.value = RM ? 1 : hero.prog;
-      uniforms.uAlpha.value += ((loader.dataset.done ? 1 : 0.35) - uniforms.uAlpha.value) * 0.04;
-      uniforms.uLight.value.set(Math.cos(t * 0.35) + mouse.sx * 1.5, Math.sin(t * 0.27) - mouse.sy * 1.5, 0.35);
-      const p = hero.prog;
-      group.rotation.y = mouse.sx * 0.35 * (1 - p * 0.5) + (1 - p) * t * 0.02;
-      group.rotation.x = mouse.sy * 0.2;
+      uniforms.uProg.value = p;
+      uniforms.uWhite.value = white;
+      logoMat.opacity = Math.max(0, (white - 0.45) / 0.55);
+      uniforms.uFade.value += ((loader.dataset.done ? 1 : 0.35) - uniforms.uFade.value) * 0.04;
+      uniforms.uL1.value.set(Math.cos(t * 0.35) + mouse.sx * 1.5, Math.sin(t * 0.27) - mouse.sy * 1.5, 0.35);
+      group.rotation.y = (mouse.sx * 0.35 * (1 - p * 0.5) + (1 - p) * t * 0.02) * (1 - white * 0.7);
+      group.rotation.x = mouse.sy * 0.2 * (1 - white * 0.7);
       camera.position.z = 9.5 - p * 1.7;
       group.position.y = (MOBILE() ? 0.35 : 0.05) * p;
       renderer.render(scene, camera);
@@ -307,11 +368,13 @@
 
   // Hero pinned scroll: fibers converge into the mark
   gsap.timeline({ scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom bottom", scrub: true } })
-    .to(hero, { prog: 1, duration: 0.72, ease: "none" }, 0)
+    .to(hero, { prog: 1, duration: 0.66, ease: "none" }, 0)
     .to(".hero__title", { yPercent: -30, opacity: 0, duration: 0.3, ease: "power1.in" }, 0.02)
     .to([".hero__sub", ".hero__top", ".hero__scroll"], { opacity: 0, duration: 0.2 }, 0.02)
-    .to(".hero__caption", { opacity: 1, duration: 0.15 }, 0.62)
-    .to(".hero__caption", { opacity: 0, duration: 0.1 }, 0.9);
+    .to(".hero__caption", { opacity: 1, duration: 0.1 }, 0.56)
+    .to(".hero__caption", { opacity: 0, duration: 0.08 }, 0.74)
+    .to(hero, { white: 1, duration: 0.16, ease: "power1.inOut" }, 0.8)
+    .to({}, { duration: 0.04 }, 0.96);
 
   // Manifesto: word-by-word illumination
   $$("[data-words]").forEach((el) => {
