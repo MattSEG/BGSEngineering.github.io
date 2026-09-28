@@ -40,7 +40,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
     <div class="ctrl mono">
       <span>Scroll or drag</span>
       <input type="range" min="0" max="1000" value="0" aria-label="Assembly">
-      <span class="turns">Whirl <button data-t="0">¼</button><button data-t="1" class="on">1¼</button><button data-t="2">2¼</button></span>
+      <span class="turns">Whirl <button data-t="0">¼</button><button data-t="1">1¼</button><button data-t="2" class="on">2¼</button></span>
       <a href="../">Current v2 ↗</a>
     </div>
   </div>
@@ -156,7 +156,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
   geo.setAttribute("aSize", IA(aSize, 2)); geo.setAttribute("aRnd", IA(aRnd, 4));
 
   const uniforms = {
-    uTime: { value: 0 }, uProg: { value: 0 }, uFade: { value: 0 }, uTurns: { value: 1 },
+    uTime: { value: 0 }, uProg: { value: 0 }, uFade: { value: 0 }, uWhite: { value: 0 }, uTurns: { value: 2 },
     uL1: { value: new THREE.Vector3(0.6, 0.5, 0.8) }, uL2: { value: new THREE.Vector3(-0.7, -0.3, 0.6) }
   };
   const mat = new THREE.ShaderMaterial({
@@ -194,7 +194,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
         gl_Position = projectionMatrix * viewMatrix * wp;
       }`,
     fragmentShader: `
-      uniform vec3 uL1; uniform float uFade;
+      uniform vec3 uL1; uniform float uFade; uniform float uWhite;
       varying vec2 vUv; varying vec3 vT; varying vec3 vW; varying vec4 vRnd; varying float vK; varying float vP;
       float h(float x){ return fract(sin(x*127.1 + 311.7) * 43758.5453); }
       void main(){
@@ -207,6 +207,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
         float streak = 0.72 + 0.28 * h(sid + 11.0);
         float g = pow(abs(dot(normalize(vT), normalize(uL1))), 5.0);
         float lum = (0.2 + 0.8 * g) * mix(0.45, 1.0, vP) * mix(0.6, 1.0, vRnd.y) * streak;
+        lum = mix(lum, 0.95, smoothstep(0.0, 0.8, uWhite));
         gl_FragColor = vec4(vec3(lum) * uFade, 1.0);
       }`
   });
@@ -214,6 +215,13 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
   group.add(new THREE.Mesh(geo, mat));
   group.children[0].frustumCulled = false;
   scene.add(group);
+  const logoMat = new THREE.MeshBasicMaterial({ color: 0xf2f2f2, transparent: true, opacity: 0, depthTest: false, depthWrite: false });
+  POLYS.forEach((poly) => {
+    const shape = new THREE.Shape(poly.map(([x, y]) => new THREE.Vector2((x - 625) * S, -(y - 721) * S)));
+    const m = new THREE.Mesh(new THREE.ShapeGeometry(shape), logoMat);
+    m.position.z = 0.03; m.renderOrder = 10;
+    group.add(m);
+  });
 
   const resize = () => {
     const w = canvas.clientWidth, hh = canvas.clientHeight;
@@ -233,20 +241,25 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
     uniforms.uTurns.value = +b.dataset.t;
     document.querySelectorAll(".turns button").forEach((x) => x.classList.toggle("on", x === b));
   }));
-  let prog = 0;
+  let prog = 0, white = 0;
   const clock = new THREE.Clock();
   const frame = () => {
     requestAnimationFrame(frame);
     const t = clock.getElapsedTime();
-    const target = Math.min(1, scrollProg() / 0.75);
+    const sp = scrollProg();
+    const target = Math.min(1, sp / 0.75);
     prog += (target - prog) * 0.08;
+    const wt = Math.min(1, Math.max(0, (sp - 0.8) / 0.15));
+    white += (wt * wt * (3 - 2 * wt) - white) * 0.1;
+    uniforms.uWhite.value = white;
+    logoMat.opacity = Math.max(0, (white - 0.45) / 0.55);
     if (document.activeElement !== slider) slider.value = Math.round(scrollProg() * 1000);
     mouse.sx += (mouse.x - mouse.sx) * 0.05; mouse.sy += (mouse.y - mouse.sy) * 0.05;
     uniforms.uTime.value = t; uniforms.uProg.value = prog;
     uniforms.uFade.value += (1 - uniforms.uFade.value) * 0.03;
     uniforms.uL1.value.set(Math.cos(t*0.35) + mouse.sx*1.5, Math.sin(t*0.27) - mouse.sy*1.5, 0.35);
-    group.rotation.y = mouse.sx * 0.35 * (1 - prog*0.5) + (1 - prog) * t * 0.02;
-    group.rotation.x = mouse.sy * 0.2;
+    group.rotation.y = (mouse.sx * 0.35 * (1 - prog*0.5) + (1 - prog) * t * 0.02) * (1 - white * 0.7);
+    group.rotation.x = mouse.sy * 0.2 * (1 - white * 0.7);
     camera.position.z = 9.5 - prog * 1.7;
     group.position.y = (MOBILE ? 0.35 : 0.05) * prog;
     title.style.opacity = String(Math.max(0, 1 - scrollProg() * 4));
