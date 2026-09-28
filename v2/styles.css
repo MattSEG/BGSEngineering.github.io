@@ -323,3 +323,23 @@ em{font-style:normal;color:#fff}
 .display__concept{font-size:.34em;margin-left:.12em;color:transparent;-webkit-text-stroke:2px #0a0a0a;letter-spacing:.02em;vertical-align:top;line-height:1}
 .studio__note strong,.callout strong{color:#000}
 @media (max-width:860px){.platform__progress{display:none}}
+
+/* contact + stay in the loop */
+.contact__grid{position:relative;display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(32px,6vw,110px);align-items:start}
+.contact__main{display:flex;flex-direction:column;align-items:flex-start;gap:18px}
+.cform__label{color:var(--grey-1);margin-bottom:22px}
+.loop{border:1px solid var(--line);padding:clamp(22px,2.5vw,36px);background:linear-gradient(180deg,#0e0e0e,#070707)}
+.loop h3{font-family:var(--display);font-size:clamp(34px,3.4vw,58px);text-transform:uppercase;line-height:.9;margin-bottom:14px}
+.loop>p:not(.mono){color:var(--grey-2);font-size:15px;margin-bottom:24px}
+.loop__actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.loop__actions .btn:hover{background:#fff;color:#000}
+.li-link{display:inline-grid;place-items:center;width:50px;height:50px;border:1px solid var(--line-2);border-radius:50%;transition:background .4s,border-color .4s}
+.li-link svg{width:18px;height:18px;fill:#fff;transition:fill .4s}
+.li-link:hover{background:#fff;border-color:#fff}
+.li-link:hover svg{fill:#000}
+.li-link--sm{width:36px;height:36px}
+.li-link--sm svg{width:14px;height:14px}
+.copy{border:1px solid var(--line-2);border-radius:99px;padding:7px 12px;color:var(--grey-2);cursor:pointer;font-size:10px}
+.copy:hover{background:#fff;color:#000}
+.foot__links{display:flex;gap:24px;align-items:center}
+@media (max-width:860px){.contact__grid{grid-template-columns:1fr}}

@@ -11,6 +11,23 @@
 
   if (hasGSAP) gsap.registerPlugin(ScrollTrigger);
 
+  /* ---------------- Site config ---------------- */
+  // GoatCounter site code (private, cookie-free stats). Empty string disables it.
+  const GOATCOUNTER = "bgsengineering";
+  if (GOATCOUNTER) {
+    const gc = document.createElement("script");
+    gc.async = true;
+    gc.src = "https://gc.zgo.at/count.js";
+    gc.dataset.goatcounter = `https://${GOATCOUNTER}.goatcounter.com/count`;
+    document.head.appendChild(gc);
+  }
+
+  $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "Copied"; }
+    catch (e) { b.textContent = "Select to copy"; }
+    setTimeout(() => (b.textContent = "Copy email"), 1800);
+  }));
+
   /* ---------------- Smooth scroll ---------------- */
   let lenis = null;
   if (!RM && typeof window.Lenis !== "undefined" && hasGSAP) {
