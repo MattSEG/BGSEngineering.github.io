@@ -26,7 +26,7 @@ iframe{border:1px solid #333;background:#050505;display:block}
 </head>
 <body class="phone">
 <header>
-  <span>Hero test · Current vs short scroll</span>
+  <span>Hero test · Current vs settle</span>
   <div class="ctl">
     <button data-size="phone" class="on">Phone size</button>
     <button data-size="desktop">Desktop size</button>
@@ -36,12 +36,12 @@ iframe{border:1px solid #333;background:#050505;display:block}
 </header>
 <main>
   <figure><iframe src="./" title="Current v2"></iframe><figcaption>Current v2 <a class="b" href="./" target="_blank">Full screen ↗</a></figcaption></figure>
-  <figure><iframe src="hero-short.html" title="Short scroll"></iframe><figcaption>Short scroll <a class="b" href="hero-short.html" target="_blank">Full screen ↗</a></figcaption></figure>
+  <figure><iframe src="hero-settle.html" title="Settle"></iframe><figcaption>Settle <a class="b" href="hero-settle.html" target="_blank">Full screen ↗</a></figcaption></figure>
 </main>
 <div class="mobile-note">
   On a phone, open each one full screen:<br>
   <a href="./">Current v2</a><br>
-  <a href="hero-short.html">Short scroll</a>
+  <a href="hero-settle.html">Settle</a>
 </div>
 <script>
   document.querySelectorAll("[data-size]").forEach((b) => b.addEventListener("click", () => {

@@ -14,6 +14,7 @@
   // Hero mode: "scroll" (default, scroll-driven assembly) or "auto" / "auto-stats" (assembly plays on load)
   const HERO_MODE = document.body.dataset.hero || "scroll";
   const AUTO = HERO_MODE.startsWith("auto");
+  const SETTLE = HERO_MODE === "settle";
   let autoTween = null;
 
   /* ---------------- Site config ---------------- */
@@ -342,7 +343,16 @@
       group.rotation.y = (mouse.sx * 0.35 * (1 - p * 0.5) + (1 - p) * t * 0.02) * (1 - white * 0.7);
       group.rotation.x = mouse.sy * 0.2 * (1 - white * 0.7);
       camera.position.z = 9.5 - p * 1.7;
-      if (AUTO) {
+      if (SETTLE) {
+        // drift up and to the right while assembling, landing beside the headline
+        const asp = canvas.clientWidth / canvas.clientHeight, port = asp < 0.8;
+        const halfH = Math.tan(17.5 * Math.PI / 180) * camera.position.z, halfW = halfH * asp;
+        const cx = port ? 0.70 : 0.78, cy = port ? 0.24 : 0.33, hFrac = port ? 0.26 : 0.42;
+        const e = p * p * (3 - 2 * p);
+        const base = port ? 0.62 : 1, tgt = hFrac * 2 * halfH / 3.1;
+        group.scale.setScalar(base + (tgt - base) * e);
+        group.position.set((cx * 2 - 1) * halfW * e, (1 - cy * 2) * halfH * e, 0);
+      } else if (AUTO) {
         const asp = canvas.clientWidth / canvas.clientHeight;
         if (asp < 0.8) group.position.set(0, 0.8, 0);
         else group.position.set(Math.min(2.3, 0.315 * camera.position.z * asp - 1.35 * group.scale.x - 0.35), -0.05, 0);
@@ -387,7 +397,25 @@
   }
 
   // Hero pinned scroll: fibers converge into the mark
-  if (AUTO) {
+  if (SETTLE) {
+    // hero height = scroll needed for the headline to reach the top; the canvas stays pinned until then
+    const heroEl = $(".hero"), titleEl = $(".hero__title");
+    const sizeHero = () => {
+      heroEl.style.height = "";
+      const vh = window.innerHeight;
+      const releaseY = MOBILE() ? vh * 0.42 : 110;
+      const titleTop = titleEl.getBoundingClientRect().top - heroEl.getBoundingClientRect().top;
+      heroEl.style.height = Math.max(vh, titleTop - releaseY + vh) + "px";
+    };
+    sizeHero();
+    ScrollTrigger.addEventListener("refreshInit", sizeHero);
+    if (document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
+    gsap.timeline({ scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom bottom", scrub: true } })
+      .to(hero, { prog: 1, duration: 0.72, ease: "none" }, 0)
+      .to([".hero__top", ".hero__scroll"], { opacity: 0, duration: 0.2 }, 0)
+      .to(hero, { white: 1, duration: 0.2, ease: "power1.inOut" }, 0.78)
+      .to({}, { duration: 0.02 }, 0.98);
+  } else if (AUTO) {
     gsap.timeline({ scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom bottom", scrub: true,
       onUpdate: (st) => { if (st.progress > 0.02 && autoTween && autoTween.progress() < 1) autoTween.timeScale(4); } } })
       .to(hero, { white: 1, duration: 0.7, ease: "power1.inOut" }, 0.05)
