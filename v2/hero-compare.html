@@ -26,7 +26,7 @@ iframe{border:1px solid #333;background:#050505;display:block}
 </head>
 <body class="phone">
 <header>
-  <span>Hero test · A vs B</span>
+  <span>Hero test · Current vs short scroll</span>
   <div class="ctl">
     <button data-size="phone" class="on">Phone size</button>
     <button data-size="desktop">Desktop size</button>
@@ -35,14 +35,13 @@ iframe{border:1px solid #333;background:#050505;display:block}
   </div>
 </header>
 <main>
-  <figure><iframe src="hero-a.html" title="Option A"></iframe><figcaption>A · Plays on load <a class="b" href="hero-a.html" target="_blank">Full screen ↗</a></figcaption></figure>
-  <figure><iframe src="hero-b.html" title="Option B"></iframe><figcaption>B · Plays on load + key numbers <a class="b" href="hero-b.html" target="_blank">Full screen ↗</a></figcaption></figure>
+  <figure><iframe src="./" title="Current v2"></iframe><figcaption>Current v2 <a class="b" href="./" target="_blank">Full screen ↗</a></figcaption></figure>
+  <figure><iframe src="hero-short.html" title="Short scroll"></iframe><figcaption>Short scroll <a class="b" href="hero-short.html" target="_blank">Full screen ↗</a></figcaption></figure>
 </main>
 <div class="mobile-note">
   On a phone, open each one full screen:<br>
-  <a href="hero-a.html">Option A · Plays on load</a><br>
-  <a href="hero-b.html">Option B · Plays on load + key numbers</a><br>
-  <a href="./">Current v2</a>
+  <a href="./">Current v2</a><br>
+  <a href="hero-short.html">Short scroll</a>
 </div>
 <script>
   document.querySelectorAll("[data-size]").forEach((b) => b.addEventListener("click", () => {

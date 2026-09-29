@@ -13,7 +13,7 @@
 
   // Hero mode: "scroll" (default, scroll-driven assembly) or "auto" / "auto-stats" (assembly plays on load)
   const HERO_MODE = document.body.dataset.hero || "scroll";
-  const AUTO = HERO_MODE !== "scroll";
+  const AUTO = HERO_MODE.startsWith("auto");
   let autoTween = null;
 
   /* ---------------- Site config ---------------- */
