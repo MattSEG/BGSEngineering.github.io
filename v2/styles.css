@@ -377,7 +377,7 @@ body[data-hero="settle"] .hero__content a{pointer-events:auto}
 body[data-hero="settle"] .hero__caption{display:none}
 body[data-hero="settle"] .hero__title{bottom:clamp(170px,22vh,220px)}
 body[data-hero="settle"] .hero__sub{left:var(--gut);right:auto;bottom:clamp(80px,11vh,110px);max-width:460px}
-body[data-hero="settle"] .manifesto{padding-top:10vh}
+body[data-hero="settle"] .manifesto{padding-top:0;position:relative;z-index:3}
 @media (max-width:860px){
   body[data-hero="settle"] .hero__title{bottom:170px}
   body[data-hero="settle"] .hero__sub{bottom:70px;max-width:none}

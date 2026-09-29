@@ -402,10 +402,16 @@
     const heroEl = $(".hero"), titleEl = $(".hero__title");
     const sizeHero = () => {
       heroEl.style.height = "";
+      if (heroEl.nextElementSibling) heroEl.nextElementSibling.style.marginTop = "";
       const vh = window.innerHeight;
       const releaseY = MOBILE() ? vh * 0.42 : 110;
       const titleTop = titleEl.getBoundingClientRect().top - heroEl.getBoundingClientRect().top;
-      heroEl.style.height = Math.max(vh, titleTop - releaseY + vh) + "px";
+      const H = Math.max(vh, titleTop - releaseY + vh);
+      heroEl.style.height = H + "px";
+      // pull the next section up so the copy follows right under the headline block
+      const subEl = $(".hero__sub"), next = heroEl.nextElementSibling;
+      const subBottom = subEl.getBoundingClientRect().bottom - heroEl.getBoundingClientRect().top;
+      next.style.marginTop = -Math.max(0, H - subBottom - vh * (MOBILE() ? 0.1 : 0.14)) + "px";
     };
     sizeHero();
     ScrollTrigger.addEventListener("refreshInit", sizeHero);
