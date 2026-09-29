@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Hero Compare · BGS</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;color:#f2f2f2;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 24px;border-bottom:1px solid #333}
+.ctl{display:flex;gap:8px;flex-wrap:wrap}
+button,a.b{font:inherit;color:#f2f2f2;background:none;border:1px solid #555;padding:8px 12px;cursor:pointer;text-decoration:none;letter-spacing:.14em}
+button.on{background:#f2f2f2;color:#000;border-color:#f2f2f2}
+main{display:flex;justify-content:center;gap:32px;padding:24px;flex-wrap:wrap}
+figure{display:flex;flex-direction:column;gap:10px;align-items:center}
+figcaption{color:#b8b8b8;display:flex;gap:14px;align-items:center}
+iframe{border:1px solid #333;background:#050505;display:block}
+.phone iframe{width:390px;height:780px}
+.desktop iframe{width:min(46vw,900px);height:min(calc(46vw*0.625),560px)}
+.mobile-note{display:none;padding:24px;line-height:2;text-transform:none;letter-spacing:0;font-size:15px}
+.mobile-note a{color:#fff}
+@media (max-width:860px){main,.ctl{display:none}.mobile-note{display:block}}
+</style>
+</head>
+<body class="phone">
+<header>
+  <span>Hero test · A vs B</span>
+  <div class="ctl">
+    <button data-size="phone" class="on">Phone size</button>
+    <button data-size="desktop">Desktop size</button>
+    <button id="replay">Replay both</button>
+    <a class="b" href="./">Current v2 ↗</a>
+  </div>
+</header>
+<main>
+  <figure><iframe src="hero-a.html" title="Option A"></iframe><figcaption>A · Plays on load <a class="b" href="hero-a.html" target="_blank">Full screen ↗</a></figcaption></figure>
+  <figure><iframe src="hero-b.html" title="Option B"></iframe><figcaption>B · Plays on load + key numbers <a class="b" href="hero-b.html" target="_blank">Full screen ↗</a></figcaption></figure>
+</main>
+<div class="mobile-note">
+  On a phone, open each one full screen:<br>
+  <a href="hero-a.html">Option A · Plays on load</a><br>
+  <a href="hero-b.html">Option B · Plays on load + key numbers</a><br>
+  <a href="./">Current v2</a>
+</div>
+<script>
+  document.querySelectorAll("[data-size]").forEach((b) => b.addEventListener("click", () => {
+    document.body.className = b.dataset.size;
+    document.querySelectorAll("[data-size]").forEach((x) => x.classList.toggle("on", x === b));
+    document.querySelectorAll("iframe").forEach((f) => (f.src = f.src));
+  }));
+  document.getElementById("replay").addEventListener("click", () => document.querySelectorAll("iframe").forEach((f) => (f.src = f.src)));
+</script>
+</body>
+</html>

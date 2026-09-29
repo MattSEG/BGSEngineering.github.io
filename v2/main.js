@@ -11,6 +11,11 @@
 
   if (hasGSAP) gsap.registerPlugin(ScrollTrigger);
 
+  // Hero mode: "scroll" (default, scroll-driven assembly) or "auto" / "auto-stats" (assembly plays on load)
+  const HERO_MODE = document.body.dataset.hero || "scroll";
+  const AUTO = HERO_MODE !== "scroll";
+  let autoTween = null;
+
   /* ---------------- Site config ---------------- */
   // GoatCounter site code (private, cookie-free stats). Empty string disables it.
   const GOATCOUNTER = "bgsengineering";
@@ -337,7 +342,11 @@
       group.rotation.y = (mouse.sx * 0.35 * (1 - p * 0.5) + (1 - p) * t * 0.02) * (1 - white * 0.7);
       group.rotation.x = mouse.sy * 0.2 * (1 - white * 0.7);
       camera.position.z = 9.5 - p * 1.7;
-      group.position.y = (MOBILE() ? 0.35 : 0.05) * p;
+      if (AUTO) {
+        const asp = canvas.clientWidth / canvas.clientHeight;
+        if (asp < 0.8) group.position.set(0, 0.8, 0);
+        else group.position.set(Math.min(2.3, 0.315 * camera.position.z * asp - 1.35 * group.scale.x - 0.35), -0.05, 0);
+      } else group.position.y = (MOBILE() ? 0.35 : 0.05) * p;
       renderer.render(scene, camera);
     };
     render();
@@ -351,6 +360,17 @@
 
   function intro() {
     if (!hasGSAP || RM) return;
+    if (AUTO) {
+      autoTween = gsap.to(hero, { prog: 1, duration: 4.6, ease: "power1.inOut", delay: 0.2 });
+      $$(".hero__stats > div").forEach((el, i) => {
+        const b = el.querySelector("b[data-to]");
+        gsap.from(el, { opacity: 0, y: 24, duration: 0.9, ease: "power3.out", delay: 1.1 + i * 0.75 });
+        if (b) {
+          const o = { v: 0 }, end = parseFloat(b.dataset.to), dec = parseInt(b.dataset.dec || "0", 10);
+          gsap.to(o, { v: end, duration: 1.4, ease: "expo.out", delay: 1.1 + i * 0.75, onUpdate: () => (b.textContent = (b.dataset.pre || "") + o.v.toFixed(dec) + (b.dataset.suf || "")) });
+        }
+      });
+    }
     gsap.from(".hero__title .line > span", { yPercent: 110, duration: 1.3, ease: "expo.out", stagger: 0.1 });
     gsap.from([".hero__sub", ".hero__top", ".hero__scroll", ".nav", ".hud"], { opacity: 0, y: 20, duration: 1.2, ease: "power3.out", stagger: 0.08, delay: 0.3 });
   }
@@ -367,7 +387,13 @@
   }
 
   // Hero pinned scroll: fibers converge into the mark
-  gsap.timeline({ scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom bottom", scrub: true } })
+  if (AUTO) {
+    gsap.timeline({ scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom bottom", scrub: true,
+      onUpdate: (st) => { if (st.progress > 0.02 && autoTween && autoTween.progress() < 1) autoTween.timeScale(4); } } })
+      .to(hero, { white: 1, duration: 0.7, ease: "power1.inOut" }, 0.05)
+      .to([".hero__title", ".hero__sub", ".hero__stats"], { opacity: 0, y: -40, duration: 0.5 }, 0.1)
+      .to([".hero__top", ".hero__scroll"], { opacity: 0, duration: 0.3 }, 0);
+  } else gsap.timeline({ scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom bottom", scrub: true } })
     .to(hero, { prog: 1, duration: 0.66, ease: "none" }, 0)
     .to(".hero__title", { yPercent: -30, opacity: 0, duration: 0.3, ease: "power1.in" }, 0.02)
     .to([".hero__sub", ".hero__top", ".hero__scroll"], { opacity: 0, duration: 0.2 }, 0.02)
