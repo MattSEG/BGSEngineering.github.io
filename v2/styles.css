@@ -382,3 +382,21 @@ body[data-hero="settle"] .manifesto{padding-top:0;position:relative;z-index:3}
   body[data-hero="settle"] .hero__title{bottom:170px}
   body[data-hero="settle"] .hero__sub{bottom:70px;max-width:none}
 }
+
+/* contact access: phone top bar, hero, strip before U1 */
+.nav__cta-m{display:none}
+.hero__cta{margin-top:20px;pointer-events:auto}
+.hero__cta:hover{background:#fff;color:#000}
+.cta-strip{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:28px var(--gut);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.cta-strip p{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(24px,2.4vw,38px);line-height:1}
+.cta-strip .btn{padding:12px 18px}
+.cta-strip .btn:hover{background:#fff;color:#000}
+body[data-hero="settle"] .hero__title{bottom:clamp(230px,29vh,280px)}
+body[data-hero="settle"] .hero__sub{bottom:clamp(56px,8vh,86px)}
+body[data-hero="settle"] .platform{height:230vh}
+@media (max-width:860px){
+  .nav__cta-m{display:inline-flex;align-items:center;margin-left:auto;margin-right:14px;border:1px solid #fff;padding:8px 12px}
+  body[data-hero="settle"] .hero__title{bottom:230px}
+  body[data-hero="settle"] .hero__sub{bottom:46px}
+  body[data-hero="settle"] .platform{height:200vh}
+}
