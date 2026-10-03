@@ -17,7 +17,7 @@ p{margin:0 0 18px;font-size:21px;line-height:1.35}
 .lead{font-size:29px;line-height:1.3;margin-bottom:26px}
 .lead.big{font-size:33px;max-width:560px}
 .dim{color:#8a8a8a}
-.anim{position:absolute;inset:0;width:1280px;height:720px;border:0;background:#000}
+.anim{position:absolute;inset:0;width:1280px;height:720px;border:0;background:#000;pointer-events:none}
 .fac{position:absolute;left:80px;right:80px;top:124px;display:grid;grid-template-columns:310px 1fr 1fr;gap:50px;align-items:start}
 .fac p{margin:0}
 .fac .lead{font-size:27px}
@@ -1071,7 +1071,7 @@ document.querySelectorAll("iframe").forEach((f) => {
   f.addEventListener("load", hook);
   try { if (f.contentDocument && f.contentDocument.readyState === "complete") hook(); } catch (e) {}
 });
-stage.addEventListener("click", (e) => { if (!e.target.closest("iframe")) show(cur + 1); });
+document.addEventListener("click", (e) => { if (!e.target.closest("#notes")) show(cur + 1); });
 window.addEventListener("resize", fit);
 window.addEventListener("hashchange", () => { const n = parseInt(location.hash.slice(1), 10); if (n && n - 1 !== cur) show(n - 1, true); });
 fit();
