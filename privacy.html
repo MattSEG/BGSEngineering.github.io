@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex"><title>Privacy · BGS Engineering</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#050505;color:#ededed;font:17px/1.65 system-ui,sans-serif}main{max-width:760px;padding:48px 24px 80px;margin:auto}a{color:inherit;text-underline-offset:4px}h1{font-size:42px;line-height:1.1;margin:40px 0 12px}h2{font-size:22px;margin-top:32px}p{color:#bdbdbd}small{color:#999}button{font:inherit;background:#ededed;color:#050505;border:0;border-radius:4px;padding:12px 18px;cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid #fff;outline-offset:5px}.status{min-height:2em}
+</style>
+</head>
+<body><main>
+<a href="/">BGS Engineering</a>
+<h1>Privacy</h1><small>Updated October 7, 2026</small>
+<p>BGS Engineering, LLC uses this website to explain our materials and manufacturing capabilities and connect with organizations interested in our work. Contact us at <a href="mailto:info@bgsengineering.com">info@bgsengineering.com</a> with privacy questions or requests.</p>
+<h2>Website activity</h2>
+<p>When measurement is enabled, we record homepage visits, estimated active viewing time by section, contact and download clicks, the referring website's domain, and recognized source tags such as email signature or LinkedIn. We do not retain full referring URLs or arbitrary URL parameters. Active time is an estimate, not proof that someone read a section.</p>
+<p>We use the connection's IP address to look up its network operator, associated domain and country through <a href="https://ipinfo.io/privacy-policy">IPinfo</a>. This can indicate a company, institution or government network. It does not establish an individual visitor's identity or employer. Shared networks, internet providers and VPNs can obscure or misrepresent an affiliation.</p>
+<p>Our analytics database does not retain raw IP addresses. An hourly changing, keyed hash of an IP address is used for a short-lived lookup cache and abuse limit and is deleted after 24 hours by scheduled cleanup. It is not used to recognize a returning individual. A random page-session identifier exists only in the page's memory and changes on refresh. We do not use tracking cookies, persistent device identifiers, browser fingerprinting or cross-site tracking.</p>
+<h2>Why we use it and who has access</h2>
+<p>We use activity to understand interest in our capabilities and improve our website and business outreach. We may associate an identified network with an existing organization in our private relationship-management system. That association does not identify which contact visited. We do not sell website activity or use it for advertising audiences.</p>
+<p>Our authorized team can access the private dashboard. GitHub hosts the public website, Railway hosts our relationship-management application, and IPinfo processes IP addresses for network lookup. Our configured AI provider, accessed through OpenRouter, may receive organization-level activity summaries to help us interpret them. We do not include raw IP addresses, page-session identifiers, contact email addresses or contact records in those AI requests. These service providers may process data outside your country. Hosting and network providers also process connection information to deliver and secure their services.</p>
+<h2>Retention and choices</h2>
+<p>Website visit records are retained for up to 90 days, with expired records removed by daily cleanup. Restricted backups may retain deleted records until the backup's retention period ends. Organization associations remain until removed. You can ask us about access, correction, deletion or objection rights available under applicable law.</p>
+<p>We honor Global Privacy Control and the browser's Do Not Track setting by disabling this homepage measurement. You can also disable it in this browser below. The only stored browser preference is your choice to disable measurement; it is not a visitor identifier.</p>
+<button type="button" id="optout">Disable website measurement</button>
+<p class="status" id="status" role="status"></p>
+<h2>Contact information</h2>
+<p>If you email us, we use the information you provide to respond and manage the relationship. Our relationship-management system is separate from website measurement. We do not match email-routing IP addresses to website visitors.</p>
+<p>BGS Engineering, LLC<br>8524 Indian School Rd NE<br>Albuquerque, NM 87112</p>
+</main>
+<script>
+const status = document.getElementById('status');
+try { if (localStorage.getItem('bgs_analytics_optout') === '1') status.textContent = 'Website measurement is disabled in this browser.'; } catch (_) {}
+document.getElementById('optout').addEventListener('click', () => {
+  try { localStorage.setItem('bgs_analytics_optout', '1'); status.textContent = 'Website measurement is disabled in this browser.'; }
+  catch (_) { status.textContent = 'Your browser cannot save this preference. Use Do Not Track or Global Privacy Control, or visit the homepage with ?analytics=off.'; }
+});
+</script>
+</body></html>
