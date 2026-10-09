@@ -137,27 +137,35 @@ body{margin:0;color:var(--ink);font-family:var(--body);font-size:16px;line-heigh
 .ledger figure img{width:100%;height:auto;display:block;filter:grayscale(1) contrast(1.05);border:1px solid var(--rule)}
 .ledger figcaption{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 
-@media (max-width:640px){
-  .stage{aspect-ratio:4/5}
-  .ttl{font-size:16cqw}.ttl.long{font-size:10.5cqw}
-  .sub{max-width:84cqw;font-size:3.7cqw}
-  .prop{bottom:10cqw;max-width:90cqw;gap:2.4cqw}
-  .tag{font-size:2cqw}
-  .status{display:none}
-  .note{font-size:2.1cqw;bottom:6.2cqw;right:4.2cqw}
-  .brand{height:9cqw}
-  .div h2{font-size:13cqw}
-  .open-sub{padding-bottom:16cqw;gap:2.4cqw}.open-sub h1{font-size:30cqw}.open-sub p{font-size:2.6cqw;letter-spacing:.3em}.open-sub span{font-size:2.1cqw}
-  .fin{justify-content:flex-end;padding-bottom:9cqw}
-  .fin .words{font-size:4.7cqw}
-  .fin .key{font-size:2.1cqw}
-  .cta-corner{font-size:2.6cqw;top:4cqw}
-  .fin .lock .cta{font-size:2.9cqw;margin-top:1.5cqw}.fin .lock .url{font-size:2.8cqw}
-  .m-loop .ttl{font-size:17cqw}.m-loop .ttl.long{font-size:11.5cqw}.m-loop .tag{font-size:2.3cqw}
-  .fin .lock{position:static;align-items:flex-start;text-align:left;margin-top:3cqw}
-  .fin .lock img{width:27cqw}.fin .lock b{font-size:4.2cqw}.fin .lock i{font-size:2.1cqw}
-  .lbl{font-size:2.3cqw}
-}
+/* phone layout: switched on by script, so it holds even when the browser reports a desktop-width page */
+.phone .m-expl .stage{aspect-ratio:9/15}
+.phone .ttl{font-size:18cqw}.phone .ttl.long{font-size:12cqw}
+.phone .sub{max-width:90cqw;font-size:4.6cqw;line-height:1.28}
+.phone .prop{bottom:13cqw;max-width:92cqw;gap:3cqw;left:5cqw}
+.phone .tag{font-size:2.7cqw}
+.phone .status{display:none}
+.phone .note{font-size:2.5cqw;bottom:7.5cqw;right:5cqw}
+.phone .brand{height:11cqw;left:5cqw;top:5cqw}
+.phone .div h2{font-size:15cqw}
+.phone .open-sub{padding-bottom:30cqw;gap:3cqw}.phone .open-sub h1{font-size:34cqw}.phone .open-sub p{font-size:3.1cqw;letter-spacing:.24em}.phone .open-sub span{font-size:2.5cqw;letter-spacing:.2em}
+.phone .fin{justify-content:flex-end;padding:6cqw 5cqw 12cqw;gap:2.4cqw}
+.phone .fin .words{font-size:7.4cqw;line-height:1}
+.phone .fin .words .o{-webkit-text-stroke:.16cqw var(--ink)}
+.phone .fin .key{font-size:2.5cqw}
+.phone .cta-corner{font-size:3.1cqw;top:5.4cqw;right:5cqw}
+.phone .fin .lock{position:static;align-items:flex-start;text-align:left;margin-top:5cqw;gap:2cqw}
+.phone .fin .lock img{width:36cqw}.phone .fin .lock b{font-size:5.6cqw}.phone .fin .lock i{font-size:2.5cqw}
+.phone .fin .lock .cta{font-size:3.6cqw;margin-top:2cqw}.phone .fin .lock .url{font-size:3.2cqw}
+.phone .m-loop .ttl{font-size:19cqw}.phone .m-loop .ttl.long{font-size:12.5cqw}.phone .m-loop .tag{font-size:2.7cqw}
+.phone .lbl{font-size:2.8cqw}
+.phone .strip{left:5cqw;right:5cqw;bottom:4.5cqw}
+.phone .bigplay{width:24cqw;height:24cqw;font-size:3.2cqw}
+.phone .ledger{grid-template-columns:1fr}
+.phone .bar,.phone .ledger,.phone .contact{zoom:var(--u,1)}
+.phone .ledger dd{font-size:16px}.phone .ledger dt{font-size:19px}
+.phone .bar button{min-width:0;flex:1 1 auto;padding:12px 10px}
+.phone .bar .chap{display:none}
+.phone .contact .cta{width:100%;text-align:center;font-size:14px;padding:16px}
 @media (prefers-reduced-motion:reduce){.ttl,.tag,.sub,.piece,.fin .words span{transition:none}}
 </style>
 
@@ -352,7 +360,10 @@ function sampleGroup(g,n){
   return {p:p,q:q};
 }
 
-var small=Math.min(window.innerWidth,screen.width||9999)<700;
+function isPhone(){var sw=Math.min(window.innerWidth,screen.width||9999),coarse=window.matchMedia&&matchMedia('(pointer:coarse)').matches;return sw<700||(coarse&&window.innerHeight>window.innerWidth*1.15&&(screen.width||9999)<1000)}
+function setPhone(){var p=isPhone(),de=document.documentElement;de.classList.toggle('phone',p);de.style.setProperty('--u',p&&window.innerWidth>700?(window.innerWidth/430).toFixed(3):'1')}
+setPhone();window.addEventListener('resize',setPhone);window.addEventListener('orientationchange',setPhone);
+var small=isPhone();
 var N=small?5200:11000;
 var SH={}, FORM={};
 var ctex=(function(){var c=document.createElement('canvas');c.width=c.height=512;var g=c.getContext('2d');g.fillStyle='#6a6a6a';g.fillRect(0,0,512,512);
@@ -646,7 +657,7 @@ function render(t){
   var c1=camOf(sc,s),c0=camOf(prev,prev.d+s),ck=sc===prev?1:sm(s/2.2);
   var r=lerp(c0.r,c1.r,ck),az=lerp(c0.az,c1.az,ck),el=lerp(c0.el,c1.el,ck),ty=lerp(c0.ty,c1.ty,ck),tx=lerp(c0.tx,c1.tx,ck);
   var asp=W/H;if(asp<1.6)r*=Math.pow(1.72/asp,.82);
-  if(narrow){ty=sc.id==='fin'?lerp(ty,-5.7,ck):ty*1.5-1.5;tx=0}
+  if(narrow){var tall=H/W>1.4;ty=sc.id==='fin'?lerp(ty,tall?-8:-5.7,ck):ty*1.5-(tall?2.1:1.5);tx=0}
   
   var sx=camShake*Math.sin(t*97),sy=camShake*Math.cos(t*83);
   cam.position.set(tx+Math.sin(az)*Math.cos(el)*r+sx,ty+Math.sin(el)*r+sy,Math.cos(az)*Math.cos(el)*r);
